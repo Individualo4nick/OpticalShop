@@ -1,0 +1,47 @@
+server:
+  port: 80
+
+logging:
+  level:
+    reactor:
+      netty: INFO
+    org:
+      springframework:
+        cloud:
+          gateway: TRACE
+
+spring:
+  cloud:
+    gateway:
+      httpserver:
+        wiretap: true
+      httpclient:
+        wiretap: true
+        ssl:
+          useInsecureTrustManager: true
+      routes:
+        - id: registration
+          uri: http://localhost:8080
+          predicates:
+            - Path=/registration
+          filters:
+            - RewritePath=/registration, /auth
+
+        - id: login
+          uri: http://localhost:8080
+          predicates:
+            - Path=/auth/login
+          filters:
+            - RewritePath=/auth/login, /auth/token
+
+        - id: refresh
+          uri: http://localhost:8080
+          predicates:
+            - Path=/auth/refresh
+
+        - id: help
+          uri: https://spring.io/guides
+          predicates:
+            - Path=/help
+          filters:
+            - RedirectTo=302, https://spring.io/guides

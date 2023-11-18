@@ -27,7 +27,7 @@ public class AuthController {
     }
 
     @PostMapping
-    public ResponseEntity register(@RequestBody User user) {
+    public ResponseEntity<String> register(@RequestBody User user) {
         userService.register(user);
         return ResponseEntity.ok("Registered");
     }
@@ -40,14 +40,14 @@ public class AuthController {
                 tokenService.generateRefreshToken(user));
     }
     @PostMapping("/refresh")
-    public TokenResponse getToken(@RequestBody TokenRequest tokenRequest) throws LoginException {
+    public TokenResponse getToken(@RequestBody TokenRequest tokenRequest) {
         if(authService.checkRefreshToken(tokenRequest.getRefreshToken()))
             return tokenService.refreshTokens(tokenRequest);
         return new TokenResponse(null, null);
     }
 
-    @ExceptionHandler({LoginException.class})
-    public ResponseEntity handleUserRegistrationException(RuntimeException ex) {
+    @ExceptionHandler(LoginException.class)
+    public ResponseEntity<ErrorResponse> handleUserRegistrationException(LoginException ex) {
         return ResponseEntity
                 .badRequest()
                 .body(new ErrorResponse(ex.getMessage()));
