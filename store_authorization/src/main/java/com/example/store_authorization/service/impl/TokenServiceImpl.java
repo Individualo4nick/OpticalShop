@@ -32,7 +32,7 @@ public class TokenServiceImpl implements TokenService {
 
         return JWT.create()
                 .withIssuer("auth-service")
-                .withAudience("auth_service, optical_shop")
+                .withAudience("auth_service, gateway, optical_shop")
                 .withSubject(user.getLogin())
                 .withClaim("role", String.valueOf(user.getRole()))
                 .withIssuedAt(Date.from(now))
@@ -49,7 +49,7 @@ public class TokenServiceImpl implements TokenService {
 
         return JWT.create()
                 .withIssuer("auth-service")
-                .withAudience("auth_service, optical_shop")
+                .withAudience("auth_service, gateway, optical_shop")
                 .withSubject(user.getLogin())
                 .withClaim("role", String.valueOf(user.getRole()))
                 .withIssuedAt(Date.from(now))

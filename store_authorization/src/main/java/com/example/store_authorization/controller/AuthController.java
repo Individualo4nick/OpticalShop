@@ -6,6 +6,7 @@ import com.example.store_authorization.domain.jwt.JwtRequest;
 import com.example.store_authorization.domain.jwt.TokenRequest;
 import com.example.store_authorization.domain.jwt.TokenResponse;
 import com.example.store_authorization.exception.LoginException;
+import com.example.store_authorization.exception.TokenException;
 import com.example.store_authorization.service.AuthService;
 import com.example.store_authorization.service.TokenService;
 import com.example.store_authorization.service.UserService;
@@ -40,14 +41,15 @@ public class AuthController {
                 tokenService.generateRefreshToken(user));
     }
     @PostMapping("/refresh")
-    public TokenResponse getToken(@RequestBody TokenRequest tokenRequest) {
+    public TokenResponse getToken(@RequestBody TokenRequest tokenRequest) throws TokenException {
         if(authService.checkRefreshToken(tokenRequest.getRefreshToken()))
             return tokenService.refreshTokens(tokenRequest);
-        return new TokenResponse(null, null);
+        else
+            throw new TokenException("Not valid refresh token");
     }
 
-    @ExceptionHandler(LoginException.class)
-    public ResponseEntity<ErrorResponse> handleUserRegistrationException(LoginException ex) {
+    @ExceptionHandler({LoginException.class, TokenException.class})
+    public ResponseEntity<ErrorResponse> handleUserRegistrationException(Exception ex) {
         return ResponseEntity
                 .badRequest()
                 .body(new ErrorResponse(ex.getMessage()));

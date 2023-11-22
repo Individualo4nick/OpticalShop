@@ -8,7 +8,7 @@ logging:
     org:
       springframework:
         cloud:
-          gateway: TRACE
+          gateway: DEBUG
 
 spring:
   cloud:
@@ -23,9 +23,9 @@ spring:
         - id: registration
           uri: http://localhost:8080
           predicates:
-            - Path=/registration
+            - Path=/auth/registration
           filters:
-            - RewritePath=/registration, /auth
+            - RewritePath=/auth/registration, /auth
 
         - id: login
           uri: http://localhost:8080
