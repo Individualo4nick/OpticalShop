@@ -20,13 +20,6 @@ spring:
         ssl:
           useInsecureTrustManager: true
       routes:
-        - id: registration
-          uri: http://localhost:8080
-          predicates:
-            - Path=/auth/registration
-          filters:
-            - RewritePath=/auth/registration, /auth
-
         - id: login
           uri: http://localhost:8080
           predicates:
