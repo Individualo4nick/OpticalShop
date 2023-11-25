@@ -10,6 +10,7 @@ import com.example.store_authorization.exception.TokenException;
 import com.example.store_authorization.service.AuthService;
 import com.example.store_authorization.service.TokenService;
 import com.example.store_authorization.service.UserService;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,4 +55,11 @@ public class AuthController {
                 .badRequest()
                 .body(new ErrorResponse(ex.getMessage()));
     }
+    @ExceptionHandler({DataIntegrityViolationException.class})
+    public ResponseEntity<ErrorResponse> handleUserRegistrationExceptionForData(Exception ex) {
+        return ResponseEntity
+                .badRequest()
+                .body(new ErrorResponse("User with this login already exists"));
+    }
+
 }

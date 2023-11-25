@@ -31,6 +31,13 @@ spring:
           uri: http://localhost:8080
           predicates:
             - Path=/auth/refresh
+          filters:
+            - TokenValidationFilter
+
+        - id: user
+          uri: http://localhost:8888
+          predicates:
+            - Path=/user/**
 
         - id: help
           uri: https://spring.io/guides
