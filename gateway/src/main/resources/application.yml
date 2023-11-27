@@ -34,10 +34,41 @@ spring:
           filters:
             - TokenValidationFilter
 
-        - id: user
+        - id: get_user_info
           uri: http://localhost:8888
           predicates:
-            - Path=/user/**
+            - Path=/user/{*id}
+
+        - id: get_products
+          uri: http://localhost:8888
+          predicates:
+            - Path=/product
+
+        - id: add_product_to_shopping_cart
+          uri: http://localhost:8888
+          predicates:
+            - Path=/product/add/{*id}
+
+        - id: comment_endpoints
+          uri: http://localhost:8888
+          predicates:
+            - Path=/product/comment/{*product_id}
+
+        - id: delete_comment_endpoint
+          uri: http://localhost:8888
+          predicates:
+            - Path=/admin/comment/{*comment_id}
+
+
+        - id: create_product
+          uri: http://localhost:8888
+          predicates:
+            - Path=/admin/create_product
+
+        - id: add_product
+          uri: http://localhost:8888
+          predicates:
+            - Path=/admin/delete_product/{*id}
 
         - id: help
           uri: https://spring.io/guides

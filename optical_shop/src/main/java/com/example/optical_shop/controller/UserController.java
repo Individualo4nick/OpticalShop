@@ -1,6 +1,7 @@
 package com.example.optical_shop.controller;
 
 import com.example.optical_shop.dto.LoginDto;
+import com.example.optical_shop.dto.ResponseDto;
 import com.example.optical_shop.entity.User;
 import com.example.optical_shop.mapper.UserMapper;
 import com.example.optical_shop.service.UserService;
@@ -21,15 +22,15 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<String> register(@RequestBody LoginDto loginDto) {
+    public ResponseEntity<ResponseDto> register(@RequestBody LoginDto loginDto) {
         userService.registerUser(loginDto);
-        return ResponseEntity.ok("Registered");
+        return ResponseEntity.ok(Responser.getResponse("Registered"));
     }
     @GetMapping("/{login}")
     public ResponseEntity<?> getUserByLogin(@PathVariable String login) {
         Optional<User> user = userService.getUserByLogin(login);
         if(user.isEmpty())
-            return ResponseEntity.ok("User with login " + login + " not found");
+            return ResponseEntity.status(400).body(Responser.getResponse("User with login " + login + " not found"));
         return ResponseEntity.ok(userMapper.userToUserDto(user.get()));
     }
 }

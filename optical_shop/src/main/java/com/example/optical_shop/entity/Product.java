@@ -17,5 +17,7 @@ public class Product {
     private int count;
     private String category;
     private int price;
-    private int warranty_in_month;
+    public void decrement_count(){
+        this.count--;
+    }
 }

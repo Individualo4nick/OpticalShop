@@ -24,5 +24,8 @@ public class ShoppingCart {
     public ShoppingCart() {
 
     }
+    public void incrementCount(){
+        this.count++;
+    }
 }
 

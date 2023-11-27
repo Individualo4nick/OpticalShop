@@ -7,5 +7,6 @@ import org.mapstruct.Mapping;
 
 @Mapper
 public interface UserMapper {
+    @Mapping(target = "name", source = "name")
     UserDto userToUserDto(User user);
 }
