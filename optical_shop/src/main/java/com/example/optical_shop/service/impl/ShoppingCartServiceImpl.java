@@ -9,6 +9,7 @@ import com.example.optical_shop.repository.UserRepository;
 import com.example.optical_shop.service.ShoppingCartService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -44,5 +45,22 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<ShoppingCart> getUserCart(String login) {
+        User user = userRepository.findUserByLogin(login).get();
+        return shoppingCartRepository.findAllByUserId(user.getId());
+    }
+
+    @Override
+    public void deleteProductFromCart(String login, Long id) {
+        User user = userRepository.findUserByLogin(login).get();
+        ShoppingCart shoppingCart = shoppingCartRepository.findShoppingCartByUserIdAndId(user.getId(), id);
+        Product product = shoppingCart.getProduct();
+        int count = shoppingCart.getCount();
+        product.setCount(product.getCount()+count);
+        productRepository.save(product);
+        shoppingCartRepository.delete(shoppingCart);
     }
 }

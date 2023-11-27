@@ -9,6 +9,6 @@ import lombok.Setter;
 @Setter
 public class CommentDto {
     public Long id;
-    public String login;
+    public String fio;
     public String text;
 }

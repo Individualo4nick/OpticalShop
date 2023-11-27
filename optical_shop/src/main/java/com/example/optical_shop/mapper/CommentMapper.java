@@ -13,10 +13,10 @@ import java.util.List;
 
 @Mapper
 public interface CommentMapper {
-    @Mapping(target = "login", source = "user")
+    @Mapping(target = "fio", source = "user")
     CommentDto commentToCommentDto(Comment comment);
     default String map(User field) {
-        return field.getLogin();
+        return field.getName() + ' ' + field.getSurname();
     }
     @IterableMapping(elementTargetType = CommentDto.class)
     List<CommentDto> listCommentToListCommentDto(Iterable<Comment> comments);

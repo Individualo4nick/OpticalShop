@@ -18,7 +18,7 @@ public class AdminController {
         this.productService = productService;
     }
 
-    @PostMapping("/create_product")
+    @PostMapping("/product")
     public ResponseEntity<ResponseDto> createProduct(@RequestBody ProductDto productDto){
         productService.saveProduct(productMapper.productDtoToProduct(productDto));
         return ResponseEntity.ok(Responser.getResponse("Saved"));
