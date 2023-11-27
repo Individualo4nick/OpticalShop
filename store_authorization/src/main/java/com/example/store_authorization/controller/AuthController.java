@@ -5,6 +5,7 @@ import com.example.store_authorization.domain.jwt.ErrorResponse;
 import com.example.store_authorization.domain.jwt.JwtRequest;
 import com.example.store_authorization.domain.jwt.TokenRequest;
 import com.example.store_authorization.domain.jwt.TokenResponse;
+import com.example.store_authorization.dto.ResponseDto;
 import com.example.store_authorization.exception.LoginException;
 import com.example.store_authorization.exception.TokenException;
 import com.example.store_authorization.service.AuthService;
@@ -29,9 +30,11 @@ public class AuthController {
     }
 
     @PostMapping
-    public ResponseEntity<String> register(@RequestBody User user) {
+    public ResponseEntity<ResponseDto> register(@RequestBody User user) {
         userService.register(user);
-        return ResponseEntity.ok("Registered");
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setMessage("Registered");
+        return ResponseEntity.ok(responseDto);
     }
 
     @PostMapping("/token")
