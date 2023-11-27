@@ -70,6 +70,6 @@ public class TokenServiceImpl implements TokenService {
         DecodedJWT decodedJWT = verifier.verify(refreshToken);
         String roleUser = decodedJWT.getClaim("role").toString();
         roleUser = roleUser.substring(1, roleUser.length() - 1);
-        return new User().setLogin(decodedJWT.getPayload()).setRole(Role.valueOf(roleUser));
+        return new User().setLogin(decodedJWT.getSubject()).setRole(Role.valueOf(roleUser));
     }
 }
