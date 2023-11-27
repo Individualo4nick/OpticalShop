@@ -37,12 +37,17 @@ spring:
         - id: get_user_info
           uri: http://localhost:8888
           predicates:
-            - Path=/user/{*id}
+            - Path=/user/{*login}
 
         - id: get_products
           uri: http://localhost:8888
           predicates:
             - Path=/product
+
+        - id: get_product
+          uri: http://localhost:8888
+          predicates:
+            - Path=/product/{*id}
 
         - id: add_product_to_shopping_cart
           uri: http://localhost:8888

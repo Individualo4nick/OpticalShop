@@ -2,6 +2,7 @@ package com.example.gateway.controller;
 
 import com.example.gateway.dto.LoginDto;
 import com.example.gateway.dto.RegisterDto;
+import com.example.gateway.dto.ResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +18,7 @@ public class RegisterController {
     private final WebClient shopClient = WebClient.create("http://localhost:8888");
 
     @PostMapping("/auth/registration")
-    public ResponseEntity<String> register(@RequestBody RegisterDto registerDto) {
+    public ResponseEntity<?> register(@RequestBody RegisterDto registerDto) {
         ResponseEntity<String> responseAuth = authClient.post().uri("/auth")
                 .body(Mono.just(registerDto), RegisterDto.class)
                 .exchangeToMono(response -> response.toEntity(String.class))
@@ -31,6 +32,8 @@ public class RegisterController {
                     .block();
         } else
             return ResponseEntity.status(responseAuth.getStatusCode()).body(responseAuth.getBody());
-        return ResponseEntity.ok("Registered");
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setMessage("Registered");
+        return ResponseEntity.ok(responseDto);
     }
 }

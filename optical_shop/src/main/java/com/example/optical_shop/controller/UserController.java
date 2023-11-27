@@ -1,5 +1,6 @@
 package com.example.optical_shop.controller;
 
+import com.example.optical_shop.dto.ChangeUserInfoDto;
 import com.example.optical_shop.dto.LoginDto;
 import com.example.optical_shop.dto.ResponseDto;
 import com.example.optical_shop.entity.User;
@@ -32,5 +33,13 @@ public class UserController {
         if(user.isEmpty())
             return ResponseEntity.status(400).body(Responser.getResponse("User with login " + login + " not found"));
         return ResponseEntity.ok(userMapper.userToUserDto(user.get()));
+    }
+    @PatchMapping("/{login}")
+    public ResponseEntity<?> patchUserByLogin(@PathVariable String login, @RequestBody ChangeUserInfoDto changeUserInfoDto) {
+        Optional<User> user = userService.getUserByLogin(login);
+        if(user.isEmpty())
+            return ResponseEntity.status(400).body(Responser.getResponse("User with login " + login + " not found"));
+        userService.changeUserInfo(login, changeUserInfoDto);
+        return ResponseEntity.ok(Responser.getResponse("Changed"));
     }
 }

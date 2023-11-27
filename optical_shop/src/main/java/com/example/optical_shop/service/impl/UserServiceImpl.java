@@ -1,5 +1,6 @@
 package com.example.optical_shop.service.impl;
 
+import com.example.optical_shop.dto.ChangeUserInfoDto;
 import com.example.optical_shop.dto.LoginDto;
 import com.example.optical_shop.entity.User;
 import com.example.optical_shop.repository.UserRepository;
@@ -26,5 +27,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<User> getUserByLogin(String login) {
         return userRepository.findUserByLogin(login);
+    }
+
+    @Override
+    public void changeUserInfo(String login, ChangeUserInfoDto changeUserInfoDto) {
+        userRepository.changeUserInfo(login, changeUserInfoDto);
     }
 }
