@@ -31,13 +31,6 @@ spring:
           uri: http://localhost:8080
           predicates:
             - Path=/auth/refresh
-          filters:
-            - TokenValidationFilter
-
-        - id: get_user_info
-          uri: http://localhost:8888
-          predicates:
-            - Path=/user/{*login}
 
         - id: get_products
           uri: http://localhost:8888
@@ -64,16 +57,15 @@ spring:
           predicates:
             - Path=/admin/comment/{*comment_id}
 
-
         - id: create_product
           uri: http://localhost:8888
           predicates:
-            - Path=/admin/create_product
+            - Path=/admin/product
 
-        - id: add_product
+        - id: delete_product
           uri: http://localhost:8888
           predicates:
-            - Path=/admin/delete_product/{*id}
+            - Path=/admin/product/{*id}
 
         - id: help
           uri: https://spring.io/guides

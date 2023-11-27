@@ -31,7 +31,7 @@ public class ProductController {
     public ResponseEntity<List<ProductDto>> getAllProducts() {
         return ResponseEntity.ok(productMapper.listProductToListProductDto(productService.getAllProductWithCountLargerZero()));
     }
-    //TODO: Добавить фильтрацию товаров
+    //TODO: Add filter product
     @GetMapping("/{id}")
     public ResponseEntity<?> getProductById(@PathVariable Long id) {
         Optional<Product> product = productService.getProductById(id);

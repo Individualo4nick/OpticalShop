@@ -5,6 +5,7 @@ import com.example.optical_shop.entity.Product;
 import com.example.optical_shop.entity.User;
 import com.example.optical_shop.repository.CommentRepository;
 import com.example.optical_shop.repository.ProductRepository;
+import com.example.optical_shop.repository.ShoppingCartRepository;
 import com.example.optical_shop.repository.UserRepository;
 import com.example.optical_shop.service.ProductService;
 import org.springframework.stereotype.Service;
@@ -17,11 +18,13 @@ public class ProductServiceImpl implements ProductService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final CommentRepository commentRepository;
+    private final ShoppingCartRepository shoppingCartRepository;
 
-    public ProductServiceImpl(UserRepository userRepository, ProductRepository productRepository, CommentRepository commentRepository) {
+    public ProductServiceImpl(UserRepository userRepository, ProductRepository productRepository, CommentRepository commentRepository, ShoppingCartRepository shoppingCartRepository) {
         this.userRepository = userRepository;
         this.productRepository = productRepository;
         this.commentRepository = commentRepository;
+        this.shoppingCartRepository = shoppingCartRepository;
     }
 
     @Override
@@ -63,6 +66,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProduct(Long id) {
+        shoppingCartRepository.deleteByProductId(id);
         productRepository.deleteById(id);
     }
 }

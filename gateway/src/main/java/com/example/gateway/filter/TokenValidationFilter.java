@@ -45,6 +45,11 @@ public class TokenValidationFilter extends
         };
     }
 
+    public String getTokenFromRequest(ServerHttpRequest request){
+        String authHeader = request.getHeaders().get(AUTHORIZATION_HEADER).get(0);
+        return authHeader.substring(TOKEN_PREFIX.length());
+    }
+
     private boolean checkAuthorization(String auth) {
         if (!auth.startsWith(TOKEN_PREFIX))
             return false;

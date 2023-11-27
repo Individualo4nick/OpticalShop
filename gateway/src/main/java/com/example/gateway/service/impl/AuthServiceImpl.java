@@ -29,6 +29,13 @@ public class AuthServiceImpl implements AuthService {
         return roleUser.substring(1, roleUser.length() - 1).equals(role);
     }
 
+    @Override
+    public String getLoginByToken(String accessToken) {
+        Algorithm algorithm = Algorithm.HMAC256(jwtAccessSecret);
+        DecodedJWT decodedJWT = decodeToken(algorithm, accessToken);
+        return decodedJWT.getSubject();
+    }
+
     public boolean checkToken(Algorithm algorithm, String token){
         try {
             DecodedJWT decodedJWT = decodeToken(algorithm, token);
@@ -47,7 +54,6 @@ public class AuthServiceImpl implements AuthService {
         return true;
     }
     private DecodedJWT decodeToken(Algorithm algorithm, String token){
-        System.out.println(token);
         JWTVerifier verifier = JWT.require(algorithm).build();
         return verifier.verify(token);
     }
