@@ -34,8 +34,8 @@ public class UserController {
             return ResponseEntity.status(400).body(Responser.getResponse("User with login " + login + " not found"));
         return ResponseEntity.ok(userMapper.userToUserDto(user.get()));
     }
-    @PatchMapping("/{login}")
-    public ResponseEntity<?> patchUserByLogin(@PathVariable String login, @RequestBody ChangeUserInfoDto changeUserInfoDto) {
+    @PutMapping("/{login}")
+    public ResponseEntity<?> updateUserByLogin(@PathVariable String login, @RequestBody ChangeUserInfoDto changeUserInfoDto) {
         Optional<User> user = userService.getUserByLogin(login);
         if(user.isEmpty())
             return ResponseEntity.status(400).body(Responser.getResponse("User with login " + login + " not found"));

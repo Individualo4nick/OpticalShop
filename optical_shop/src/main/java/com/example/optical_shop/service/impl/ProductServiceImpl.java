@@ -1,5 +1,6 @@
 package com.example.optical_shop.service.impl;
 
+import com.example.optical_shop.dto.ProductDto;
 import com.example.optical_shop.entity.Comment;
 import com.example.optical_shop.entity.Product;
 import com.example.optical_shop.entity.User;
@@ -68,5 +69,10 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct(Long id) {
         shoppingCartRepository.deleteByProductId(id);
         productRepository.deleteById(id);
+    }
+
+    @Override
+    public void updateProduct(ProductDto productDto) {
+        productRepository.changeProductInfo(productDto);
     }
 }

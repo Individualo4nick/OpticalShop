@@ -31,15 +31,9 @@ public class ShoppingCartController {
         return ResponseEntity.ok(Responser.getResponse("Successful deleted"));
     }
 
-//    @PostMapping("/increment_in_shopping_cart")
-//    public String incrementInShoppingCart(@RequestParam Long id) {
-//        shoppingCartService.incrementInShoppingCart(id);
-//        return "redirect:/component/shopping_cart";
-//    }
-//
-//    @PostMapping("/decrement_in_shopping_cart")
-//    public String decrementInShoppingCart(@RequestParam Long id) {
-//        shoppingCartService.decrementInShoppingCart(id);
-//        return "redirect:/component/shopping_cart";
-//    }
+    @PostMapping("/pay/{login}")
+    public ResponseEntity<ResponseDto> pay(@PathVariable String login) {
+        shoppingCartService.pay(login);
+        return ResponseEntity.ok(Responser.getResponse("Successful paid"));
+    }
 }

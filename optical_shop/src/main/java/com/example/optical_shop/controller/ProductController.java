@@ -40,7 +40,7 @@ public class ProductController {
         return ResponseEntity.ok(productMapper.productToProductDto(product.get()));
     }
 
-    @PostMapping("/add/{id}")
+    @PostMapping("/add_to_cart/{id}")
     public ResponseEntity<ResponseDto> addToShoppingCart(@PathVariable Long id, @RequestBody LoginDto loginDto) {
         boolean success = shoppingCartService.addProduct(loginDto.login, id);
         if (success)

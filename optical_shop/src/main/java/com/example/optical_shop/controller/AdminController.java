@@ -34,4 +34,10 @@ public class AdminController {
         productService.deleteProduct(id);
         return ResponseEntity.ok(Responser.getResponse("Deleted product"));
     }
+
+    @PutMapping("/product")
+    public ResponseEntity<ResponseDto> updateProduct(@RequestBody ProductDto productDto) {
+        productService.updateProduct(productDto);
+        return ResponseEntity.ok(Responser.getResponse("Successful updated"));
+    }
 }

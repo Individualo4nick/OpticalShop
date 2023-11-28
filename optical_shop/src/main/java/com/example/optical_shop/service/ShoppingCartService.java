@@ -8,4 +8,5 @@ public interface ShoppingCartService {
     boolean addProduct(String login, Long product_id);
     List<ShoppingCart> getUserCart(String login);
     void deleteProductFromCart(String login, Long id);
+    void pay(String login);
 }

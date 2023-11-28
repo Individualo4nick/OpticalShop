@@ -14,4 +14,6 @@ public interface ShoppingCartRepository extends JpaRepository<ShoppingCart, Long
     ShoppingCart findShoppingCartByUserIdAndId(Long userId, Long id);
     @Transactional
     void deleteByProductId(Long productId); //This method works before the method for deleting a product
+    @Transactional
+    void deleteByUserLogin(String userLogin);
 }

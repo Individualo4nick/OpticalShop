@@ -63,4 +63,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         productRepository.save(product);
         shoppingCartRepository.delete(shoppingCart);
     }
+
+    @Override
+    public void pay(String login) {
+        shoppingCartRepository.deleteByUserLogin(login);
+    }
 }

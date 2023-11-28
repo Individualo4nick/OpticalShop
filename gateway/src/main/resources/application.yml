@@ -42,34 +42,36 @@ spring:
           predicates:
             - Path=/product/{*id}
 
-        - id: add_product_to_shopping_cart
-          uri: http://localhost:8888
-          predicates:
-            - Path=/product/add/{*id}
-
         - id: comment_endpoints
           uri: http://localhost:8888
           predicates:
             - Path=/product/comment/{*product_id}
+            - TokenValidationFilter
 
         - id: delete_comment_endpoint
           uri: http://localhost:8888
           predicates:
             - Path=/admin/comment/{*comment_id}
+            - TokenValidationFilter
+            - AdminFilter
 
         - id: create_product
           uri: http://localhost:8888
           predicates:
             - Path=/admin/product
+            - TokenValidationFilter
+            - AdminFilter
 
-        - id: delete_product
+        - id: product_endpoints
           uri: http://localhost:8888
           predicates:
             - Path=/admin/product/{*id}
+            - TokenValidationFilter
+            - AdminFilter
 
-        - id: help
-          uri: https://spring.io/guides
+        - id: update_product
+          uri: http://localhost:8888
           predicates:
-            - Path=/help
-          filters:
-            - RedirectTo=302, https://spring.io/guides
+            - Path=/admin/product
+            - TokenValidationFilter
+            - AdminFilter

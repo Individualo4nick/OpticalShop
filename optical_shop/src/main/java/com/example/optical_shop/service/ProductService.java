@@ -1,5 +1,6 @@
 package com.example.optical_shop.service;
 
+import com.example.optical_shop.dto.ProductDto;
 import com.example.optical_shop.entity.Comment;
 import com.example.optical_shop.entity.Product;
 
@@ -14,4 +15,5 @@ public interface ProductService {
     void saveProduct(Product product);
     void deleteComment(Long id);
     void deleteProduct(Long id);
+    void updateProduct(ProductDto productDto);
 }

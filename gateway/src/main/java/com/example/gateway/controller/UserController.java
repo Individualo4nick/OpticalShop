@@ -42,12 +42,12 @@ public class UserController {
             return ResponseEntity.status(responseAuth.getStatusCode()).body(responseAuth.getBody());
         return ResponseEntity.ok(responseAuth.getBody());
     }
-    @PatchMapping("/user")
+    @PutMapping("/user")
     public ResponseEntity<?> updateUserInfo(@RequestBody ChangeUserInfoDto changeUserInfoDto, ServerHttpRequest request) {
         String token = filter.getTokenFromRequest(request);
         if (authService.checkAccessToken(token)) {
             String login = authService.getLoginByToken(token);
-            ResponseEntity<?> response = shopClient.patch().uri("/user/" + login)
+            ResponseEntity<?> response = shopClient.put().uri("/user/" + login)
                     .body(Mono.just(changeUserInfoDto), ChangeUserInfoDto.class)
                     .exchangeToMono(response1 -> response1.toEntity(Object.class))
                     .block();
