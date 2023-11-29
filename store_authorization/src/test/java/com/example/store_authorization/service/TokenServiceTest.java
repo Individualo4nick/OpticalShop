@@ -1,6 +1,7 @@
 package com.example.store_authorization.service;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.store_authorization.domain.entity.User;
@@ -14,7 +15,6 @@ import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 class TokenServiceTest {
@@ -25,11 +25,13 @@ class TokenServiceTest {
     @InjectMocks
     private TokenServiceImpl tokenService;
 
+    private final String jwtAccessSecret = "qBTmv4oXFFR2GwjexDJ4t6fsIUIUhhXqlktXjXdkcyygs8nPVEwMfo29VDRRepYDVV5IkIxBMzr7OEHXEHd37w==";
     private final String jwtRefreshSecret = "zL1HB3Pch05Avfynovxrf/kpF9O2m4NCWKJUjEp27s9J2jEG3ifiKCGylaZ8fDeoONSTJP/wAzKawB8F9rOMNg==";
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         tokenService = new TokenServiceImpl();
+        tokenService.setJwtAccessSecret(jwtAccessSecret);
         tokenService.setJwtRefreshSecret(jwtRefreshSecret);
     }
 
@@ -50,6 +52,38 @@ class TokenServiceTest {
         assertNotNull(result);
         assertEquals("Vitaliy1", result.getLogin());
         assertEquals(Role.ADMIN, result.getRole());
+        verify(mockLogger, never()).error(anyString());
+    }
+
+    @Test
+    void generateAccessToken_ValidToken(){
+        User user = new User();
+        user.setLogin("Vitaliy1");
+        user.setRole(Role.ADMIN);
+        String result = tokenService.generateAccessToken(user);
+        Algorithm algorithm = Algorithm.HMAC256(jwtAccessSecret);
+        JWTVerifier verifier = JWT.require(algorithm).build();
+        DecodedJWT decodedResult = verifier.verify(result);
+        assertEquals("Vitaliy1", decodedResult.getSubject());
+        assert(decodedResult.getAudience().toString().contains("optical_shop"));
+        assertEquals("auth-service", decodedResult.getIssuer());
+        assertEquals("ADMIN", decodedResult.getClaim("role").toString().substring(1, 6));
+        verify(mockLogger, never()).error(anyString());
+    }
+
+    @Test
+    void generateRefreshToken_ValidToken(){
+        User user = new User();
+        user.setLogin("Vitaliy1");
+        user.setRole(Role.ADMIN);
+        String result = tokenService.generateRefreshToken(user);
+        Algorithm algorithm = Algorithm.HMAC256(jwtRefreshSecret);
+        JWTVerifier verifier = JWT.require(algorithm).build();
+        DecodedJWT decodedResult = verifier.verify(result);
+        assertEquals("Vitaliy1", decodedResult.getSubject());
+        assert(decodedResult.getAudience().toString().contains("optical_shop"));
+        assertEquals("auth-service", decodedResult.getIssuer());
+        assertEquals("ADMIN", decodedResult.getClaim("role").toString().substring(1, 6));
         verify(mockLogger, never()).error(anyString());
     }
 }
