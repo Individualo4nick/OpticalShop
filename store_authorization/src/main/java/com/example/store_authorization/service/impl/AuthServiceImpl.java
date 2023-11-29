@@ -29,7 +29,7 @@ public class AuthServiceImpl implements AuthService {
                 log.error("Issuer is incorrect");
                 return false;
             }
-            if (!decodedJWT.getAudience().toString().contains("optical_shop")) {
+            if (!decodedJWT.getAudience().toString().contains("auth-service")) {
                 log.error("Audience is incorrect");
                 return false;
             }
