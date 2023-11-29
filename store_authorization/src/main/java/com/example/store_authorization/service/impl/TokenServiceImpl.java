@@ -9,6 +9,7 @@ import com.example.store_authorization.domain.entity.roles.Role;
 import com.example.store_authorization.domain.jwt.TokenRequest;
 import com.example.store_authorization.domain.jwt.TokenResponse;
 import com.example.store_authorization.service.TokenService;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 @Service
+@Setter
 public class TokenServiceImpl implements TokenService {
     @Value("${jwt.secret.access}")
     private String jwtAccessSecret;
