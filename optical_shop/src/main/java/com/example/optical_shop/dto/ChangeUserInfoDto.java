@@ -10,4 +10,8 @@ public class ChangeUserInfoDto {
     public String name;
     public String surname;
     public String address;
+
+    public ChangeUserInfoDto(String email) {
+        this.email = email;
+    }
 }
