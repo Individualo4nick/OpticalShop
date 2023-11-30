@@ -34,7 +34,7 @@ public class ProductController {
         return ResponseEntity.ok(productMapper.listProductToListProductDto(productService.getAllProductWithCountLargerZero()));
     }
     @PostMapping
-    public PageResponse getFilterProducts(@RequestBody FilterRequest filterRequest){
+    public ResponseEntity<PageResponse> getFilterProducts(@RequestBody FilterRequest filterRequest){
         Page<Product> page;
         if (filterRequest.page != null && filterRequest.size != null)
             page = productService.getFilterProduct(PageRequest.of(filterRequest.page, filterRequest.size), filterRequest.category);
@@ -44,7 +44,7 @@ public class ProductController {
             page = productService.getFilterProduct(PageRequest.of(0, filterRequest.size), filterRequest.category);
         else
             page = productService.getFilterProduct(PageRequest.of(0, 20), filterRequest.category);
-        return new PageResponse().setContent(productMapper.listProductToListProductDto(page.getContent())).setPage(page.getNumber()).setSize(page.getSize());
+        return ResponseEntity.ok(new PageResponse().setContent(productMapper.listProductToListProductDto(page.getContent())).setPage(page.getNumber()).setSize(page.getSize()));
     }
     @GetMapping("/{id}")
     public ResponseEntity<?> getProductById(@PathVariable Long id) {
