@@ -5,20 +5,39 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.example.store_authorization.domain.entity.Refresh;
+import com.example.store_authorization.domain.entity.User;
+import com.example.store_authorization.repository.RefreshRepository;
 import com.example.store_authorization.service.AuthService;
+import com.example.store_authorization.service.TokenService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @Slf4j
 public class AuthServiceImpl implements AuthService {
+    private final TokenService tokenService;
+    private final RefreshRepository refreshRepository;
     @Value("${jwt.secret.refresh}")
     private String jwtRefreshSecret;
+
+    public AuthServiceImpl(TokenService tokenService, RefreshRepository refreshRepository) {
+        this.tokenService = tokenService;
+        this.refreshRepository = refreshRepository;
+    }
+
     @Override
     public boolean checkRefreshToken(String refreshToken) {
         Algorithm algorithm = Algorithm.HMAC256(jwtRefreshSecret);
-        return checkToken(algorithm, refreshToken);
+        if (checkToken(algorithm, refreshToken)){
+            User user = tokenService.getUserWithLoginAndRoleByToken(refreshToken);
+            Optional<Refresh> refresh = refreshRepository.findById(user.getLogin());
+            return refresh.isPresent() && refreshToken.equals(refresh.get().getRefreshToken());
+        }
+        return false;
     }
     public boolean checkToken(Algorithm algorithm, String token){
         JWTVerifier verifier = JWT.require(algorithm).build();

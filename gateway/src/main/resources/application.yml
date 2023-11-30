@@ -46,12 +46,14 @@ spring:
           uri: http://localhost:8888
           predicates:
             - Path=/product/comment/{*product_id}
+          filters:
             - TokenValidationFilter
 
         - id: delete_comment_endpoint
           uri: http://localhost:8888
           predicates:
             - Path=/admin/comment/{*comment_id}
+          filters:
             - TokenValidationFilter
             - AdminFilter
 
@@ -59,6 +61,7 @@ spring:
           uri: http://localhost:8888
           predicates:
             - Path=/admin/product
+          filters:
             - TokenValidationFilter
             - AdminFilter
 
@@ -66,6 +69,7 @@ spring:
           uri: http://localhost:8888
           predicates:
             - Path=/admin/product/{*id}
+          filters:
             - TokenValidationFilter
             - AdminFilter
 
@@ -73,5 +77,6 @@ spring:
           uri: http://localhost:8888
           predicates:
             - Path=/admin/product
+          filters:
             - TokenValidationFilter
             - AdminFilter
