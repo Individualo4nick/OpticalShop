@@ -8,6 +8,8 @@ import com.example.optical_shop.service.ProductService;
 import com.example.optical_shop.service.ShoppingCartService;
 import com.example.optical_shop.service.UserService;
 import org.mapstruct.factory.Mappers;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +33,19 @@ public class ProductController {
     public ResponseEntity<List<ProductDto>> getAllProducts() {
         return ResponseEntity.ok(productMapper.listProductToListProductDto(productService.getAllProductWithCountLargerZero()));
     }
-    //TODO: Add filter product
+    @PostMapping
+    public PageResponse getFilterProducts(@RequestBody FilterRequest filterRequest){
+        Page<Product> page;
+        if (filterRequest.page != null && filterRequest.size != null)
+            page = productService.getFilterProduct(PageRequest.of(filterRequest.page, filterRequest.size), filterRequest.category);
+        else if (filterRequest.page != null)
+            page = productService.getFilterProduct(PageRequest.of(filterRequest.page, 20), filterRequest.category);
+        else if (filterRequest.size != null)
+            page = productService.getFilterProduct(PageRequest.of(0, filterRequest.size), filterRequest.category);
+        else
+            page = productService.getFilterProduct(PageRequest.of(0, 20), filterRequest.category);
+        return new PageResponse().setContent(productMapper.listProductToListProductDto(page.getContent())).setPage(page.getNumber()).setSize(page.getSize());
+    }
     @GetMapping("/{id}")
     public ResponseEntity<?> getProductById(@PathVariable Long id) {
         Optional<Product> product = productService.getProductById(id);

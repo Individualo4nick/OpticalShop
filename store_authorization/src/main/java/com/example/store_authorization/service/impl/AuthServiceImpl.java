@@ -44,7 +44,6 @@ public class AuthServiceImpl implements AuthService {
         try {
             DecodedJWT decodedJWT = verifier.verify(token);
             if (!decodedJWT.getIssuer().equals("auth-service")) {
-                System.out.println(decodedJWT.getIssuer());
                 log.error("Issuer is incorrect");
                 return false;
             }

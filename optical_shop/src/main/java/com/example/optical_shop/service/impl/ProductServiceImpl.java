@@ -9,6 +9,8 @@ import com.example.optical_shop.repository.ProductRepository;
 import com.example.optical_shop.repository.ShoppingCartRepository;
 import com.example.optical_shop.repository.UserRepository;
 import com.example.optical_shop.service.ProductService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -74,5 +76,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void updateProduct(ProductDto productDto) {
         productRepository.changeProductInfo(productDto);
+    }
+
+    @Override
+    public Page<Product> getFilterProduct(Pageable pageable, String category) {
+        return productRepository.findAllByCategoryContainsIgnoreCase(pageable, category);
     }
 }
