@@ -13,7 +13,8 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private Long productId;
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
     private String text;
 

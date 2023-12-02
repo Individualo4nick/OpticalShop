@@ -1,4 +1,4 @@
-package com.example.optical_shop.service;
+package com.example.optical_shop.unit.service;
 
 import com.example.optical_shop.entity.Product;
 import com.example.optical_shop.entity.ShoppingCart;
@@ -7,11 +7,11 @@ import com.example.optical_shop.repository.ProductRepository;
 import com.example.optical_shop.repository.ShoppingCartRepository;
 import com.example.optical_shop.repository.UserRepository;
 import com.example.optical_shop.service.impl.ShoppingCartServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +20,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class ShoppingCartServiceTest {
 
     @Mock
@@ -33,12 +34,6 @@ class ShoppingCartServiceTest {
 
     @InjectMocks
     private ShoppingCartServiceImpl shoppingCartService;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        shoppingCartService = new ShoppingCartServiceImpl(shoppingCartRepository, userRepository, productRepository);
-    }
 
     @Test
     void addProduct_ValidInputsAndAvailableProduct_ReturnsTrueAndShoppingCartIsUpdated() {
@@ -86,8 +81,6 @@ class ShoppingCartServiceTest {
         shoppingCart.setCount(1);
 
         when(userRepository.findUserByLogin(login)).thenReturn(Optional.of(user));
-        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
-        when(shoppingCartRepository.findShoppingCartByProductId(productId)).thenReturn(Optional.of(shoppingCart));
 
         boolean result = shoppingCartService.addProduct(login, productId);
 

@@ -7,15 +7,18 @@ import com.example.store_authorization.repository.UserRepository;
 import com.example.store_authorization.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
     @Mock
@@ -24,11 +27,6 @@ class UserServiceTest {
     @InjectMocks
     private UserServiceImpl userService;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        userService = new UserServiceImpl(userRepository);
-    }
 
     @Test
     void register_ValidUser_PasswordIsHashedAndUserIsSaved() {

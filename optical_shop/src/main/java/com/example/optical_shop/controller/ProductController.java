@@ -6,7 +6,6 @@ import com.example.optical_shop.mapper.CommentMapper;
 import com.example.optical_shop.mapper.ProductMapper;
 import com.example.optical_shop.service.ProductService;
 import com.example.optical_shop.service.ShoppingCartService;
-import com.example.optical_shop.service.UserService;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,7 +23,7 @@ public class ProductController {
     private final ProductMapper productMapper = Mappers.getMapper(ProductMapper.class);
     private final CommentMapper commentMapper = Mappers.getMapper(CommentMapper.class);
 
-    public ProductController(UserService userService, ProductService productService, ShoppingCartService shoppingCartService) {
+    public ProductController(ProductService productService, ShoppingCartService shoppingCartService) {
         this.productService = productService;
         this.shoppingCartService = shoppingCartService;
     }
