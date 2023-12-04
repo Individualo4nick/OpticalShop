@@ -17,6 +17,6 @@ public interface ProductService {
     void saveProduct(Product product);
     void deleteComment(Long id);
     void deleteProduct(Long id);
-    void updateProduct(ProductDto productDto);
+    void updateProduct(Product product);
     Page<Product> getFilterProduct(Pageable pageable, String category);
 }

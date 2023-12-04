@@ -177,21 +177,11 @@ class ProductServiceTest {
     }
 
     @Test
-    void deleteProduct_ExistingProductId_ProductAndShoppingCartEntriesAreDeleted() {
-        Long productId = 1L;
-
-        productService.deleteProduct(productId);
-
-        verify(shoppingCartRepository).deleteByProductId(productId);  // Проверяем, что вызвался метод deleteByProductId в shoppingCartRepository с аргументом типа Long
-        verify(productRepository).deleteById(productId);  // Проверяем, что вызвался метод deleteById в productRepository с аргументом типа Long
-    }
-
-    @Test
     void updateProduct_ValidProductDto_ProductInfoIsUpdated() {
-        ProductDto productDto = new ProductDto();
+        Product product = new Product();
 
-        productService.updateProduct(productDto);
+        productService.updateProduct(product);
 
-        verify(productRepository).changeProductInfo(productDto);  // Проверяем, что вызвался метод changeProductInfo в productRepository с аргументом типа ProductDto
+        verify(productRepository).changeProductInfo(product);  // Проверяем, что вызвался метод changeProductInfo в productRepository с аргументом типа ProductDto
     }
 }

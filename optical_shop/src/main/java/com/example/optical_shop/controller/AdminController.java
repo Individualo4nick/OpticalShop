@@ -37,7 +37,7 @@ public class AdminController {
 
     @PutMapping("/product")
     public ResponseEntity<ResponseDto> updateProduct(@RequestBody ProductDto productDto) {
-        productService.updateProduct(productDto);
+        productService.updateProduct(productMapper.productDtoToProduct(productDto));
         return ResponseEntity.ok(Responser.getResponse("Successful updated"));
     }
 }

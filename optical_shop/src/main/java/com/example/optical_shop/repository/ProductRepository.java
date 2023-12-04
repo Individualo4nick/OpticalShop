@@ -21,7 +21,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Transactional
     @Modifying
     @Query("update Product p set p.title = :#{#dto.title}, p.description = :#{#dto.description}, p.category = :#{#dto.category}, p.price = :#{#dto.price}, p.count = :#{#dto.count} where p.id = :#{#dto.id}")
-    void changeProductInfo(@Param("dto") ProductDto productDto);
+    void changeProductInfo(@Param("dto") Product product);
 
     Page<Product> findAllByCategoryContainsIgnoreCase(Pageable pageable, String category);
 }
