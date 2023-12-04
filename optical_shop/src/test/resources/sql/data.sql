@@ -4,6 +4,7 @@ INSERT INTO users (id, login, email, name, surname, address) VALUES
             (3, 'user3', 'user3@example.com', 'Michael', 'Johnson', '789 Oak St'),
             (4, 'user4', 'user4@example.com', 'Emily', 'Brown', '321 Pine St'),
             (5, 'user5', 'user5@example.com', 'David', 'Wilson', '654 Maple St');
+SELECT SETVAL('users_id_seq', (SELECT MAX(id) FROM users));
 
 INSERT INTO products (id, title, description, count, category, price) VALUES
             (1, 'Title1', 'Description1', 10, 'Category1', 100),

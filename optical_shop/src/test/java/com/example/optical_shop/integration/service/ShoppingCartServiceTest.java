@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -62,6 +63,10 @@ public class ShoppingCartServiceTest extends IntegrationTestBase {
     void getUserCart_ExistingUser_ReturnsListOfShoppingCartItems() {
         String login = "user1";
         List<ShoppingCart> result = shoppingCartService.getUserCart(login);
+        List<ShoppingCart> expectedResult = shoppingCartRepository.findAllByUserId(1L);
+
+        assertThat(result.get(0)).usingRecursiveComparison().isEqualTo(expectedResult.get(0));
+        assertThat(result.get(1)).usingRecursiveComparison().isEqualTo(expectedResult.get(1));
 
         assertEquals(login, result.get(0).getUser().getLogin());
         assertEquals(1L, result.get(0).getUser().getId());
