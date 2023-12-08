@@ -31,7 +31,7 @@ public class UserController {
                 .body(Mono.just(registerDto), RegisterDto.class)
                 .exchangeToMono(response -> response.toEntity(Object.class))
                 .block();
-        if (responseAuth.getStatusCode() == HttpStatus.OK) {
+        if (responseAuth.getStatusCode() == HttpStatus.CREATED) {
             LoginDto loginDto = new LoginDto();
             loginDto.login = registerDto.login;
             shopClient.post().uri("/user")
@@ -49,6 +49,18 @@ public class UserController {
             String login = authService.getLoginByToken(token);
             ResponseEntity<?> response = shopClient.put().uri("/user/" + login)
                     .body(Mono.just(changeUserInfoDto), ChangeUserInfoDto.class)
+                    .exchangeToMono(response1 -> response1.toEntity(Object.class))
+                    .block();
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+        } else
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+    @GetMapping("/user")
+    public ResponseEntity<?> getUserInfo(ServerHttpRequest request) {
+        String token = filter.getTokenFromRequest(request);
+        if (authService.checkAccessToken(token)) {
+            String login = authService.getLoginByToken(token);
+            ResponseEntity<?> response = shopClient.get().uri("/user/" + login)
                     .exchangeToMono(response1 -> response1.toEntity(Object.class))
                     .block();
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());

@@ -64,6 +64,7 @@ public class TokenServiceImpl implements TokenService {
                 .withIssuedAt(Date.from(now))
                 .withExpiresAt(Date.from(exp))
                 .sign(algorithm);
+
         Refresh refresh = new Refresh(user.getLogin(), refreshToken);
         refreshRepository.save(refresh);
         return refreshToken;

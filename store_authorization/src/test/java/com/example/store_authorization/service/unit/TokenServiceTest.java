@@ -1,4 +1,4 @@
-package com.example.store_authorization.service;
+package com.example.store_authorization.service.unit;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;

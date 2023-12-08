@@ -32,15 +32,23 @@ spring:
           predicates:
             - Path=/auth/refresh
 
-        - id: get_products
+        - id: product_endpoints
           uri: http://localhost:8888
           predicates:
-            - Path=/product
+            - Path=/admin/product/{*id}
+          filters:
+            - TokenValidationFilter
+            - AdminFilter
 
         - id: get_product
           uri: http://localhost:8888
           predicates:
             - Path=/product/{*id}
+
+        - id: get_products
+          uri: http://localhost:8888
+          predicates:
+            - Path=/product
 
         - id: comment_endpoints
           uri: http://localhost:8888
@@ -61,14 +69,6 @@ spring:
           uri: http://localhost:8888
           predicates:
             - Path=/admin/product
-          filters:
-            - TokenValidationFilter
-            - AdminFilter
-
-        - id: product_endpoints
-          uri: http://localhost:8888
-          predicates:
-            - Path=/admin/product/{*id}
           filters:
             - TokenValidationFilter
             - AdminFilter

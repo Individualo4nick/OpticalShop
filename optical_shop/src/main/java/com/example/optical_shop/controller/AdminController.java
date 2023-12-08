@@ -5,6 +5,7 @@ import com.example.optical_shop.dto.ResponseDto;
 import com.example.optical_shop.mapper.ProductMapper;
 import com.example.optical_shop.service.ProductService;
 import org.mapstruct.factory.Mappers;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,7 @@ public class AdminController {
     @PostMapping("/product")
     public ResponseEntity<ResponseDto> createProduct(@RequestBody ProductDto productDto){
         productService.saveProduct(productMapper.productDtoToProduct(productDto));
-        return ResponseEntity.ok(Responser.getResponse("Saved"));
+        return ResponseEntity.status(HttpStatus.CREATED).body(Responser.getResponse("Created product"));
     }
     @DeleteMapping("/comment/{comment_id}")
     public ResponseEntity<ResponseDto> deleteComment(@PathVariable Long comment_id) {

@@ -12,6 +12,8 @@ import com.example.store_authorization.service.AuthService;
 import com.example.store_authorization.service.TokenService;
 import com.example.store_authorization.service.UserService;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +36,7 @@ public class AuthController {
         userService.register(user);
         ResponseDto responseDto = new ResponseDto();
         responseDto.setMessage("Registered");
-        return ResponseEntity.ok(responseDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     @PostMapping("/token")

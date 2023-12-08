@@ -7,8 +7,6 @@ import com.example.store_authorization.repository.UserRepository;
 import com.example.store_authorization.service.UserService;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 

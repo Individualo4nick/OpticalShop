@@ -7,6 +7,7 @@ import com.example.optical_shop.entity.User;
 import com.example.optical_shop.mapper.UserMapper;
 import com.example.optical_shop.service.UserService;
 import org.mapstruct.factory.Mappers;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,7 @@ public class UserController {
     @PostMapping
     public ResponseEntity<ResponseDto> register(@RequestBody LoginDto loginDto) {
         userService.registerUser(loginDto);
-        return ResponseEntity.ok(Responser.getResponse("Registered"));
+        return ResponseEntity.status(HttpStatus.CREATED).body(Responser.getResponse("Registered"));
     }
     @GetMapping("/{login}")
     public ResponseEntity<?> getUserByLogin(@PathVariable String login) {
@@ -34,6 +35,7 @@ public class UserController {
             return ResponseEntity.status(400).body(Responser.getResponse("User with login " + login + " not found"));
         return ResponseEntity.ok(userMapper.userToUserDto(user.get()));
     }
+
     @PutMapping("/{login}")
     public ResponseEntity<?> updateUserByLogin(@PathVariable String login, @RequestBody ChangeUserInfoDto changeUserInfoDto) {
         Optional<User> user = userService.getUserByLogin(login);

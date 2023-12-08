@@ -1,16 +1,14 @@
-package com.example.store_authorization.service;
+package com.example.store_authorization.service.unit;
 
 import com.example.store_authorization.domain.entity.User;
 import com.example.store_authorization.domain.jwt.JwtRequest;
 import com.example.store_authorization.exception.LoginException;
 import com.example.store_authorization.repository.UserRepository;
 import com.example.store_authorization.service.impl.UserServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
