@@ -1,0 +1,60 @@
+version: "3.9"
+services:
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+
+  store-authorization:
+    build:
+      context: ./store_authorization
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - authorization_db
+      - redis
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://authorization_db:5432/store_authorization
+
+  optical-shop:
+    build:
+      context: ./optical_shop
+    ports:
+      - "8888:8888"
+    depends_on:
+      - optical_db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://optical_db:5432/OpticalShop
+
+  authorization_db:
+    image: postgres
+    restart: always
+    volumes:
+      - ./sql/schema-postgresql.sql:/docker-entrypoint-initdb.d/create_tables.sql
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=wtf2281337
+      - POSTGRES_DB=store_authorization
+    ports:
+      - "5432:5432"
+
+  optical_db:
+    image: postgres
+    restart: always
+    volumes:
+      - ./sql/schema-postgresql.sql:/docker-entrypoint-initdb.d/create_tables.sql
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=wtf2281337
+      - POSTGRES_DB=OpticalShop
+    ports:
+      - "5433:5432"
+
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - "6379:6379"

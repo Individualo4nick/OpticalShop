@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
 public class ShoppingCartController {
     private final AuthService authService;
     private final TokenValidationFilter filter;
-    private final WebClient shopClient = WebClient.create("http://localhost:8888");
+    private final WebClient shopClient = WebClient.create("http://optical-shop:8888");
 
     public ShoppingCartController(AuthService authService, TokenValidationFilter filter) {
         this.authService = authService;
@@ -40,8 +40,9 @@ public class ShoppingCartController {
         String token = filter.getTokenFromRequest(request);
         if (authService.checkAccessToken(token)) {
             String login = authService.getLoginByToken(token);
+            System.out.println(login);
             LoginDto loginDto = new LoginDto();
-            loginDto.login = login;
+            loginDto.setLogin(login);
             ResponseEntity<?> response = shopClient.post().uri("/product/add_to_cart/" + id.toString())
                     .body(Mono.just(loginDto), LoginDto.class)
                     .exchangeToMono(response1 -> response1.toEntity(Object.class))

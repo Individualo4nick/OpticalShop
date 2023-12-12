@@ -21,19 +21,19 @@ spring:
           useInsecureTrustManager: true
       routes:
         - id: login
-          uri: http://localhost:8080
+          uri: http://store-authorization:8080
           predicates:
             - Path=/auth/login
           filters:
             - RewritePath=/auth/login, /auth/token
 
         - id: refresh
-          uri: http://localhost:8080
+          uri: http://store-authorization:8080
           predicates:
             - Path=/auth/refresh
 
         - id: product_endpoints
-          uri: http://localhost:8888
+          uri: http://optical-shop:8888
           predicates:
             - Path=/admin/product/{*id}
           filters:
@@ -41,24 +41,24 @@ spring:
             - AdminFilter
 
         - id: get_product
-          uri: http://localhost:8888
+          uri: http://optical-shop:8888
           predicates:
             - Path=/product/{*id}
 
         - id: get_products
-          uri: http://localhost:8888
+          uri: http://optical-shop:8888
           predicates:
             - Path=/product
 
         - id: comment_endpoints
-          uri: http://localhost:8888
+          uri: http://optical-shop:8888
           predicates:
             - Path=/product/comment/{*product_id}
           filters:
             - TokenValidationFilter
 
         - id: delete_comment_endpoint
-          uri: http://localhost:8888
+          uri: http://optical-shop:8888
           predicates:
             - Path=/admin/comment/{*comment_id}
           filters:
@@ -66,7 +66,7 @@ spring:
             - AdminFilter
 
         - id: create_product
-          uri: http://localhost:8888
+          uri: http://optical-shop:8888
           predicates:
             - Path=/admin/product
           filters:
@@ -74,7 +74,7 @@ spring:
             - AdminFilter
 
         - id: update_product
-          uri: http://localhost:8888
+          uri: http://optical-shop:8888
           predicates:
             - Path=/admin/product
           filters:
