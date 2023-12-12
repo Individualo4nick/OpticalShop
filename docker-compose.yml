@@ -15,9 +15,10 @@ services:
       - "8080:8080"
     depends_on:
       - authorization_db
-      - redis
+      - token-storage
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://authorization_db:5432/store_authorization
+      - SPRING_DATA_REDIS_HOST=token-storage
 
   optical-shop:
     build:
@@ -53,7 +54,7 @@ services:
     ports:
       - "5433:5432"
 
-  redis:
+  token-storage:
     image: redis
     restart: always
     ports:
