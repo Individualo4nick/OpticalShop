@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
 public class ShoppingCartController {
     private final AuthService authService;
     private final TokenValidationFilter filter;
-    private final WebClient shopClient = WebClient.create("http://optical-shop:8888");
+    private final WebClient shopClient = WebClient.create("lb://OPTICAL-SHOP");
 
     public ShoppingCartController(AuthService authService, TokenValidationFilter filter) {
         this.authService = authService;

@@ -15,8 +15,8 @@ import reactor.core.publisher.Mono;
 @RestController
 public class UserController {
     //TODO: Change WebClient to RestClient when Spring Cloud update
-    private final WebClient authClient = WebClient.create("http://store-authorization:8080");
-    private final WebClient shopClient = WebClient.create("http://optical-shop:8888");
+    private final WebClient authClient = WebClient.create("lb://STORE-AUTHORIZATION");
+    private final WebClient shopClient = WebClient.create("lb://OPTICAL-SHOP");
     private final AuthService authService;
     private final TokenValidationFilter filter;
 
