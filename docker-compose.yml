@@ -1,11 +1,21 @@
 version: "3.9"
 services:
+  eureka-server:
+    build:
+      context: ./eureka_server
+      dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+
   gateway:
     build:
       context: ./gateway
       dockerfile: Dockerfile
     ports:
       - "80:80"
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - EUREKA_INSTANSE_PREFERIPADDRESS=true
 
   store-authorization:
     build:
@@ -19,6 +29,8 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://authorization_db:5432/store_authorization
       - SPRING_DATA_REDIS_HOST=token-storage
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - EUREKA_INSTANSE_PREFERIPADDRESS=true
 
   optical-shop:
     build:
@@ -29,6 +41,8 @@ services:
       - optical_db
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://optical_db:5432/OpticalShop
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - EUREKA_INSTANSE_PREFERIPADDRESS=true
 
   authorization_db:
     image: postgres
