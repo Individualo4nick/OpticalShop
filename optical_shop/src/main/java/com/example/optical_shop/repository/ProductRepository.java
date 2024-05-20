@@ -24,4 +24,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     void changeProductInfo(@Param("dto") Product product);
 
     Page<Product> findAllByCategoryContainsIgnoreCase(Pageable pageable, String category);
+
+    Page<Product> findAllByCategoryContainsIgnoreCaseAndIdIn(Pageable pageable, String category, List<Long> ids);
 }

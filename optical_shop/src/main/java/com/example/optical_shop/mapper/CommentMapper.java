@@ -16,7 +16,7 @@ public interface CommentMapper {
     @Mapping(target = "fio", source = "user")
     CommentDto commentToCommentDto(Comment comment);
     default String map(User field) {
-        return field.getName() + ' ' + field.getSurname();
+        return field.getName() == null ? "Anon" : (field.getName() + ' ' + (field.getSurname() == null ? "" : field.getSurname()));
     }
     @IterableMapping(elementTargetType = CommentDto.class)
     List<CommentDto> listCommentToListCommentDto(Iterable<Comment> comments);

@@ -13,5 +13,5 @@ public class PageResponse {
     public List<ProductDto> content;
     public int page;
     public int size;
-    public long totalElements;
+    public long totalPages;
 }

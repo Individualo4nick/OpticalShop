@@ -71,8 +71,8 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public TokenResponse refreshTokens(TokenRequest tokenRequest) {
-        User user = getUserWithLoginAndRoleByToken(tokenRequest.getRefreshToken());
+    public TokenResponse refreshTokens(String tokenRequest) {
+        User user = getUserWithLoginAndRoleByToken(tokenRequest);
         return new TokenResponse(generateAccessToken(user), generateRefreshToken(user));
     }
 

@@ -25,11 +25,11 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public boolean addProduct(String login, Long product_id) {
+    public boolean addProduct(String login, Long productId) {
         Optional<User> user = userRepository.findUserByLogin(login);
-        Optional<Product> product = productRepository.findById(product_id);
+        Optional<Product> product = productRepository.findById(productId);
         if (user.isPresent() && product.isPresent() && product.get().getCount() > 0) {
-            Optional<ShoppingCart> shoppingCart = shoppingCartRepository.findShoppingCartByProductId(product_id);
+            Optional<ShoppingCart> shoppingCart = shoppingCartRepository.findShoppingCartByProductIdAndUserIdAndOrderIsNull(productId, user.get().getId());
             ShoppingCart shoppingCart1;
             Product product1 = product.get();
             product1.decrement_count();
@@ -50,7 +50,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public List<ShoppingCart> getUserCart(String login) {
         User user = userRepository.findUserByLogin(login).get();
-        return shoppingCartRepository.findAllByUserId(user.getId());
+        return shoppingCartRepository.findAllByUserIdAndOrderIsNull(user.getId());
     }
 
     @Override
@@ -67,5 +67,26 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public void pay(String login) {
         shoppingCartRepository.deleteByUserLogin(login);
+    }
+
+    @Override
+    public void increaseInCart(String login, Long id) {
+        User user = userRepository.findUserByLogin(login).get();
+        ShoppingCart shoppingCart = shoppingCartRepository.findShoppingCartByUserIdAndId(user.getId(), id);
+        shoppingCart.setCount(shoppingCart.getCount() + 1);
+        shoppingCartRepository.save(shoppingCart);
+    }
+
+    @Override
+    public void decreaseInCart(String login, Long id) {
+        User user = userRepository.findUserByLogin(login).get();
+        ShoppingCart shoppingCart = shoppingCartRepository.findShoppingCartByUserIdAndId(user.getId(), id);
+        if (shoppingCart.getCount() - 1 == 0){
+            shoppingCartRepository.deleteById(shoppingCart.getId());
+        }
+        else {
+            shoppingCart.setCount(shoppingCart.getCount() - 1);
+            shoppingCartRepository.save(shoppingCart);
+        }
     }
 }

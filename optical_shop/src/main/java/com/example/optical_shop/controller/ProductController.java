@@ -7,11 +7,16 @@ import com.example.optical_shop.mapper.ProductMapper;
 import com.example.optical_shop.service.ProductService;
 import com.example.optical_shop.service.ShoppingCartService;
 import org.mapstruct.factory.Mappers;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,22 +33,34 @@ public class ProductController {
         this.shoppingCartService = shoppingCartService;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<ProductDto>> getAllProducts() {
-        return ResponseEntity.ok(productMapper.listProductToListProductDto(productService.getAllProductWithCountLargerZero()));
+        List<ProductDto> productDtoList = productMapper.listProductToListProductDto(productService.getAllProductWithCountLargerZero());
+        productDtoList.sort(Comparator.comparing(o -> o.title));
+        return ResponseEntity.ok(productDtoList);
     }
-    @PostMapping
-    public ResponseEntity<PageResponse> getFilterProducts(@RequestBody FilterRequest filterRequest){
-        Page<Product> page;
-        if (filterRequest.page != null && filterRequest.size != null)
-            page = productService.getFilterProduct(PageRequest.of(filterRequest.page, filterRequest.size), filterRequest.category);
-        else if (filterRequest.page != null)
-            page = productService.getFilterProduct(PageRequest.of(filterRequest.page, 20), filterRequest.category);
-        else if (filterRequest.size != null)
-            page = productService.getFilterProduct(PageRequest.of(0, filterRequest.size), filterRequest.category);
-        else
-            page = productService.getFilterProduct(PageRequest.of(0, 20), filterRequest.category);
-        return ResponseEntity.ok(new PageResponse().setContent(productMapper.listProductToListProductDto(page.getContent())).setPage(page.getNumber()).setSize(page.getSize()));
+
+//    @PostMapping("/favorites")
+//    public ResponseEntity<List<ProductDto>> getProductsByIds(@RequestBody ListProductIdsDto listProductIdsDto){
+//        List<ProductDto> productDtoList = productMapper.listProductToListProductDto(productService.getAllProductWithCountLargerZero());
+//        var listIds = listProductIdsDto.ids.stream().map(Long::parseLong).toList();
+//        return ResponseEntity.ok(productDtoList.stream().filter(productDto -> listIds.contains(productDto.id)).toList());
+//    }
+
+    @PostMapping("/favorites")
+    public ResponseEntity<PageResponse> getProductsByIds(@RequestBody ListProductIdsDto listProductIdsDto, @RequestParam String category, @RequestParam int page, @RequestParam int size){
+        Page<Product> productPage = productService.getFavoriteProducts(PageRequest.of(page == 0 ? 0 : page - 1, size), category, listProductIdsDto.ids.stream().map(Long::parseLong).toList());
+        List<ProductDto> productDtoList = productMapper.listProductToListProductDto(productPage.getContent());
+        productDtoList.sort(Comparator.comparing(o -> o.title));
+        return ResponseEntity.ok(new PageResponse().setContent(productDtoList).setPage(productPage.getNumber()).setSize(productPage.getSize()).setTotalPages(productPage.getTotalPages()));
+    }
+
+    @GetMapping
+    public ResponseEntity<PageResponse> getFilterProducts(@RequestParam String category, @RequestParam int page, @RequestParam int size){
+        Page<Product> productPage = productService.getFilterProduct(PageRequest.of(page == 0 ? 0 : page - 1, size), category);
+        List<ProductDto> productDtoList = productMapper.listProductToListProductDto(productPage.getContent());
+        productDtoList.sort(Comparator.comparing(o -> o.title));
+        return ResponseEntity.ok(new PageResponse().setContent(productDtoList).setPage(productPage.getNumber()).setSize(productPage.getSize()).setTotalPages(productPage.getTotalPages()));
     }
     @GetMapping("/{id}")
     public ResponseEntity<?> getProductById(@PathVariable Long id) {
@@ -53,7 +70,7 @@ public class ProductController {
         return ResponseEntity.ok(productMapper.productToProductDto(product.get()));
     }
 
-    @PostMapping("/add_to_cart/{id}")
+    @PostMapping("/add/{id}")
     public ResponseEntity<ResponseDto> addToShoppingCart(@PathVariable Long id, @RequestBody LoginDto loginDto) {
         boolean success = shoppingCartService.addProduct(loginDto.login, id);
         if (success)
@@ -61,16 +78,30 @@ public class ProductController {
         return ResponseEntity.status(400).body(Responser.getResponse("Error add. This item may be out of stock"));
     }
 
+    @GetMapping("/image/download/{id}")
+    public ResponseEntity<Resource> downloadProductImage(@PathVariable Long id) throws IOException {
+        Resource resource = productService.downloadProductImage(id);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
+    }
+
     @PostMapping("/comment/{product_id}")
-    public ResponseEntity<ResponseDto> sendComment(@PathVariable Long product_id, @RequestBody AddCommentDto addCommentDto) {
-        boolean success = productService.addComment(product_id, addCommentDto.text, addCommentDto.login);
-        if (success)
-            return ResponseEntity.ok(Responser.getResponse("Sent"));
+    public ResponseEntity<?> sendComment(@PathVariable Long product_id, @RequestBody AddCommentDto addCommentDto) {
+        var comment = productService.addComment(product_id, addCommentDto.text, addCommentDto.login);
+        if (comment != null)
+            return ResponseEntity.ok(commentMapper.commentToCommentDto(comment));
         return ResponseEntity.status(400).body(Responser.getResponse("Error send"));
     }
 
     @GetMapping("/comment/{product_id}")
     public ResponseEntity<List<CommentDto>> getComments(@PathVariable Long product_id) {
         return ResponseEntity.ok(commentMapper.listCommentToListCommentDto(productService.getComments(product_id)));
+    }
+    @ExceptionHandler({IOException.class})
+    public ResponseEntity<String> handleUserRegistrationExceptionForData(Exception ex) {
+        return ResponseEntity
+                .badRequest()
+                .body("Error");
     }
 }

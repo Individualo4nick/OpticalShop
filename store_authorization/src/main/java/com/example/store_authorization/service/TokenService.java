@@ -7,6 +7,6 @@ import com.example.store_authorization.domain.jwt.TokenResponse;
 public interface TokenService {
     String generateAccessToken(User user);
     String generateRefreshToken(User user);
-    TokenResponse refreshTokens(TokenRequest tokenRequest);
+    TokenResponse refreshTokens(String tokenRequest);
     User getUserWithLoginAndRoleByToken(String refreshToken);
 }

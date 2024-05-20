@@ -31,8 +31,12 @@ public class ShoppingCartController {
                     .exchangeToMono(response1 -> response1.toEntityList(Object.class))
                     .block();
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
-        } else
+        } else if (token != null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
     @PostMapping("/product/add_to_cart/{id}")
@@ -40,7 +44,6 @@ public class ShoppingCartController {
         String token = filter.getTokenFromRequest(request);
         if (authService.checkAccessToken(token)) {
             String login = authService.getLoginByToken(token);
-            System.out.println(login);
             LoginDto loginDto = new LoginDto();
             loginDto.setLogin(login);
             ResponseEntity<?> response = shopClient.post().uri("/product/add_to_cart/" + id.toString())
@@ -48,8 +51,12 @@ public class ShoppingCartController {
                     .exchangeToMono(response1 -> response1.toEntity(Object.class))
                     .block();
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
-        } else
+        } else if (token != null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
     @DeleteMapping("/{cart_id}")
@@ -61,8 +68,12 @@ public class ShoppingCartController {
                     .exchangeToMono(response1 -> response1.toEntity(Object.class))
                     .block();
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
-        } else
+        } else if (token != null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
     @PostMapping("/pay")
@@ -74,7 +85,45 @@ public class ShoppingCartController {
                     .exchangeToMono(response1 -> response1.toEntity(Object.class))
                     .block();
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
-        } else
+        } else if (token != null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
+    @PostMapping("/increase/{id}")
+    public ResponseEntity<?> increaseInCart(ServerHttpRequest request, @PathVariable Long id) {
+        String token = filter.getTokenFromRequest(request);
+        if (authService.checkAccessToken(token)) {
+            String login = authService.getLoginByToken(token);
+            ResponseEntity<?> response = shopClient.post().uri("/cart/" + login + "/increase/" + id)
+                    .exchangeToMono(response1 -> response1.toEntity(Object.class))
+                    .block();
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+        } else if (token != null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
+    @PostMapping("/decrease/{id}")
+    public ResponseEntity<?> decreaseInCart(ServerHttpRequest request, @PathVariable Long id) {
+        String token = filter.getTokenFromRequest(request);
+        if (authService.checkAccessToken(token)) {
+            String login = authService.getLoginByToken(token);
+            ResponseEntity<?> response = shopClient.post().uri("/cart/" + login + "/decrease/" + id)
+                    .exchangeToMono(response1 -> response1.toEntity(Object.class))
+                    .block();
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+        } else if (token != null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 }

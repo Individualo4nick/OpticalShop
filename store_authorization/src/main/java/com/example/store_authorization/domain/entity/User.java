@@ -15,9 +15,14 @@ public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "login", unique = true, nullable = false)
     private String login;
+
+    @Column(name = "password", nullable = false)
     private String password;
+
+    @Column(name = "role", nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
 }

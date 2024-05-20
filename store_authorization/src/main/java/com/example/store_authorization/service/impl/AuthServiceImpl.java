@@ -35,6 +35,7 @@ public class AuthServiceImpl implements AuthService {
         if (checkToken(algorithm, refreshToken)){
             User user = tokenService.getUserWithLoginAndRoleByToken(refreshToken);
             Optional<Refresh> refresh = refreshRepository.findById(user.getLogin());
+//            return true;
             return refresh.isPresent() && refreshToken.equals(refresh.get().getRefreshToken());
         }
         return false;

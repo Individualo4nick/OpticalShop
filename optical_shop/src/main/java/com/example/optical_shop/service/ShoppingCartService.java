@@ -9,4 +9,6 @@ public interface ShoppingCartService {
     List<ShoppingCart> getUserCart(String login);
     void deleteProductFromCart(String login, Long id);
     void pay(String login);
+    void increaseInCart(String login, Long id);
+    void decreaseInCart(String login, Long id);
 }

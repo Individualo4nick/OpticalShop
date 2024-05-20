@@ -23,6 +23,7 @@ repositories {
 
 ext {
     mapstructVersion = "1.5.5.Final"
+    lombokMapstructBindingVersion = "0.2.0"
     set('springCloudVersion', "2022.0.4")
 }
 dependencies {
@@ -33,6 +34,7 @@ dependencies {
     testImplementation 'org.projectlombok:lombok:1.18.28'
     annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
     testAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+    annotationProcessor "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.postgresql:postgresql'
     annotationProcessor 'org.projectlombok:lombok'

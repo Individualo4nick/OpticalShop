@@ -1,6 +1,7 @@
 package com.example.store_authorization.service.impl;
 
 import com.example.store_authorization.domain.entity.User;
+import com.example.store_authorization.domain.entity.roles.Role;
 import com.example.store_authorization.domain.jwt.JwtRequest;
 import com.example.store_authorization.exception.LoginException;
 import com.example.store_authorization.repository.UserRepository;
@@ -21,6 +22,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void register(User user) {
         user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
+        user.setRole(Role.USER);
         userRepository.save(user);
     }
 

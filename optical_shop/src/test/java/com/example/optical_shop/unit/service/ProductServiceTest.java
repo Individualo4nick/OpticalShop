@@ -100,9 +100,7 @@ class ProductServiceTest {
         when(userRepository.findUserByLogin(login)).thenReturn(Optional.of(user));
         when(productRepository.findById(productId)).thenReturn(Optional.of(product));
 
-        boolean result = productService.addComment(productId, text, login);
-
-        assertTrue(result);
+        productService.addComment(productId, text, login);
         verify(userRepository).findUserByLogin(login);  // Проверяем, что вызвался метод findUserByLogin в userRepository
         verify(productRepository).findById(productId);  // Проверяем, что вызвался метод findById в productRepository
         verify(commentRepository).save(any(Comment.class));  // Проверяем, что вызвался метод save в commentRepository с аргументом типа Comment
@@ -116,9 +114,8 @@ class ProductServiceTest {
 
         when(userRepository.findUserByLogin(login)).thenReturn(Optional.empty());
 
-        boolean result = productService.addComment(productId, text, login);
+        productService.addComment(productId, text, login);
 
-        assertFalse(result);
         verify(userRepository).findUserByLogin(login);  // Проверяем, что вызвался метод findUserByLogin в userRepository
         verify(commentRepository, never()).save(any(Comment.class));  // Проверяем, что метод save в commentRepository не вызывался
     }
@@ -135,9 +132,8 @@ class ProductServiceTest {
         when(userRepository.findUserByLogin(login)).thenReturn(Optional.of(user));
         when(productRepository.findById(productId)).thenReturn(Optional.empty());
 
-        boolean result = productService.addComment(productId, text, login);
+        productService.addComment(productId, text, login);
 
-        assertFalse(result);
         verify(userRepository).findUserByLogin(login);  // Проверяем, что вызвался метод findUserByLogin в userRepository
         verify(productRepository).findById(productId);  // Проверяем, что вызвался метод findById в productRepository
         verify(commentRepository, never()).save(any(Comment.class));  // Проверяем, что метод save в commentRepository не вызывался

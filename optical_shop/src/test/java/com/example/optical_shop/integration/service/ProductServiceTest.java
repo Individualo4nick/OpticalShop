@@ -60,8 +60,8 @@ public class ProductServiceTest extends IntegrationTestBase {
         String text = "Test comment";
         String login = "user1";
 
-        boolean result = productService.addComment(productId, text, login);
-        assertTrue(result);
+        var comment = productService.addComment(productId, text, login);
+        assertNotNull(comment);
         List<Comment> comments = commentRepository.findAll();
         Comment lastComment = comments.get(comments.size() - 1);
         assertEquals(productId, lastComment.getProductId());
@@ -75,8 +75,8 @@ public class ProductServiceTest extends IntegrationTestBase {
         String text = "Test comment";
         String login = "non_existing_user";
 
-        boolean result = productService.addComment(productId, text, login);
-        assertFalse(result);
+        var comment = productService.addComment(productId, text, login);
+        assertNull(comment);
     }
 
     @Test
@@ -85,8 +85,8 @@ public class ProductServiceTest extends IntegrationTestBase {
         String text = "Test comment";
         String login = "user1";
 
-        boolean result = productService.addComment(productId, text, login);
-        assertFalse(result);
+        var comment = productService.addComment(productId, text, login);
+        assertNull(comment);
     }
 
     @Test

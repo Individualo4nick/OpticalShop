@@ -11,13 +11,18 @@ import com.example.store_authorization.exception.TokenException;
 import com.example.store_authorization.service.AuthService;
 import com.example.store_authorization.service.TokenService;
 import com.example.store_authorization.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin
 public class AuthController {
 
     private final UserService userService;
@@ -39,16 +44,23 @@ public class AuthController {
     }
 
     @PostMapping("/token")
-    public TokenResponse getToken(@RequestBody JwtRequest jwtRequest) throws LoginException {
+    public ResponseEntity<TokenResponse> getToken(@RequestBody JwtRequest jwtRequest) throws LoginException {
         userService.checkCredentials(jwtRequest);
         User user = userService.getUserByLogin(jwtRequest.getLogin());
-        return new TokenResponse(tokenService.generateAccessToken(user),
-                tokenService.generateRefreshToken(user));
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Set-Cookie", "refresh=" + tokenService.generateRefreshToken(user) + "; Path=/auth/refresh; Max-Age=3600; HttpOnly");
+        return ResponseEntity.ok().headers(headers).body(new TokenResponse(tokenService.generateAccessToken(user), tokenService.generateRefreshToken(user)));
     }
-    @PostMapping("/refresh")
-    public TokenResponse getToken(@RequestBody TokenRequest tokenRequest) throws TokenException {
-        if(authService.checkRefreshToken(tokenRequest.getRefreshToken()))
-            return tokenService.refreshTokens(tokenRequest);
+    @GetMapping("/refresh")
+    public ResponseEntity<TokenResponse> refresh(HttpServletRequest request) throws TokenException {
+        var cookies = request.getCookies();
+        var refreshToken = cookies != null ? getRefresh(cookies) : null;
+        if(authService.checkRefreshToken(refreshToken)) {
+            var response = tokenService.refreshTokens(refreshToken);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Set-Cookie", "refresh=" + response.getRefreshToken() + "; Path=/auth/refresh; Max-Age=3600; HttpOnly");
+            return ResponseEntity.ok().headers(headers).body(response);
+        }
         else
             throw new TokenException("Not valid refresh token");
     }
@@ -64,5 +76,13 @@ public class AuthController {
         return ResponseEntity
                 .badRequest()
                 .body(new ErrorResponse("User with this login already exists"));
+    }
+    private String getRefresh(Cookie[] cookies){
+        for (Cookie cookie : cookies){
+            if (cookie.getName().equals("refresh")){
+                return cookie.getValue();
+            }
+        }
+        return null;
     }
 }

@@ -52,8 +52,12 @@ public class UserController {
                     .exchangeToMono(response1 -> response1.toEntity(Object.class))
                     .block();
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
-        } else
+        } else if (token != null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
     @GetMapping("/user")
     public ResponseEntity<?> getUserInfo(ServerHttpRequest request) {
@@ -64,7 +68,11 @@ public class UserController {
                     .exchangeToMono(response1 -> response1.toEntity(Object.class))
                     .block();
             return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
-        } else
+        } else if (token != null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 }
