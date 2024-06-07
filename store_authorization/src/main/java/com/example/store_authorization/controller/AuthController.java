@@ -20,6 +20,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.concurrent.TimeUnit;
+
 @RestController
 @RequestMapping("/auth")
 @CrossOrigin
@@ -56,7 +58,8 @@ public class AuthController {
         userService.checkCredentials(jwtRequest);
         User user = userService.getUserByLogin(jwtRequest.getLogin());
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Set-Cookie", "refresh=" + tokenService.generateRefreshToken(user) + "; Path=/auth/refresh; Max-Age=3600; HttpOnly");
+        int maxAge = (int) TimeUnit.DAYS.toSeconds(7);
+        headers.add("Set-Cookie", "refresh=" + tokenService.generateRefreshToken(user) + "; Path=/auth/refresh; Max-Age=" + maxAge + "; HttpOnly");
         return ResponseEntity.ok().headers(headers).body(new TokenResponse(tokenService.generateAccessToken(user), tokenService.generateRefreshToken(user)));
     }
     @GetMapping("/refresh")
@@ -66,7 +69,8 @@ public class AuthController {
         if(authService.checkRefreshToken(refreshToken)) {
             var response = tokenService.refreshTokens(refreshToken);
             HttpHeaders headers = new HttpHeaders();
-            headers.add("Set-Cookie", "refresh=" + response.getRefreshToken() + "; Path=/auth/refresh; Max-Age=3600; HttpOnly");
+            int maxAge = (int) TimeUnit.DAYS.toSeconds(7);
+            headers.add("Set-Cookie", "refresh=" + response.getRefreshToken() + "; Path=/auth/refresh; Max-Age=" + maxAge + "; HttpOnly");
             return ResponseEntity.ok().headers(headers).body(response);
         }
         else
