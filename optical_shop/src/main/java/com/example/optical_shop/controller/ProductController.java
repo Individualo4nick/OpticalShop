@@ -40,13 +40,6 @@ public class ProductController {
         return ResponseEntity.ok(productDtoList);
     }
 
-//    @PostMapping("/favorites")
-//    public ResponseEntity<List<ProductDto>> getProductsByIds(@RequestBody ListProductIdsDto listProductIdsDto){
-//        List<ProductDto> productDtoList = productMapper.listProductToListProductDto(productService.getAllProductWithCountLargerZero());
-//        var listIds = listProductIdsDto.ids.stream().map(Long::parseLong).toList();
-//        return ResponseEntity.ok(productDtoList.stream().filter(productDto -> listIds.contains(productDto.id)).toList());
-//    }
-
     @PostMapping("/favorites")
     public ResponseEntity<PageResponse> getProductsByIds(@RequestBody ListProductIdsDto listProductIdsDto, @RequestParam String category, @RequestParam int page, @RequestParam int size){
         Page<Product> productPage = productService.getFavoriteProducts(PageRequest.of(page == 0 ? 0 : page - 1, size), category, listProductIdsDto.ids.stream().map(Long::parseLong).toList());

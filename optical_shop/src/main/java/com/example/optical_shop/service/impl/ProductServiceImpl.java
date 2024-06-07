@@ -1,6 +1,5 @@
 package com.example.optical_shop.service.impl;
 
-import com.example.optical_shop.dto.ProductDto;
 import com.example.optical_shop.entity.Comment;
 import com.example.optical_shop.entity.Product;
 import com.example.optical_shop.entity.User;
@@ -31,7 +30,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CommentRepository commentRepository;
     private final ShoppingCartRepository shoppingCartRepository;
-    private static final String UPLOAD_DIRECTORY = "/Users/user/IdeaProjects/OpticalShop/optical_shop/images";
+    private static final String UPLOAD_DIRECTORY = "/app/images";
 
     public ProductServiceImpl(UserRepository userRepository, ProductRepository productRepository, CommentRepository commentRepository, ShoppingCartRepository shoppingCartRepository) {
         this.userRepository = userRepository;

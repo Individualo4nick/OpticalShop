@@ -1,16 +1,22 @@
 version: "3.9"
 services:
   eureka-server:
+    image: vitaliy789/eureka-server:latest
     build:
       context: ./eureka_server
       dockerfile: Dockerfile
+    networks:
+      - my-network
     ports:
       - "8761:8761"
 
   gateway:
+    image: vitaliy789/gateway:latest
     build:
       context: ./gateway
       dockerfile: Dockerfile
+    networks:
+      - my-network
     ports:
       - "80:80"
     environment:
@@ -18,9 +24,12 @@ services:
       - EUREKA_INSTANSE_PREFERIPADDRESS=true
 
   store-authorization:
+    image: vitaliy789/store-authorization:latest
     build:
       context: ./store_authorization
       dockerfile: Dockerfile
+    networks:
+      - my-network
     ports:
       - "8080:8080"
     depends_on:
@@ -33,10 +42,15 @@ services:
       - EUREKA_INSTANSE_PREFERIPADDRESS=true
 
   optical-shop:
+    image: vitaliy789/optical-shop:latest
     build:
       context: ./optical_shop
+    networks:
+      - my-network
     ports:
       - "8888:8888"
+    volumes:
+      - ./images:/app/images
     depends_on:
       - optical_db
     environment:
@@ -51,10 +65,12 @@ services:
       - ./sql/schema-postgresql.sql:/docker-entrypoint-initdb.d/create_tables.sql
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=wtf2281337
+      - POSTGRES_PASSWORD=wtf123
       - POSTGRES_DB=store_authorization
+    networks:
+      - my-network
     ports:
-      - "5432:5432"
+      - "5434:5432"
 
   optical_db:
     image: postgres
@@ -63,13 +79,34 @@ services:
       - ./sql/schema-postgresql.sql:/docker-entrypoint-initdb.d/create_tables.sql
     environment:
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=wtf2281337
+      - POSTGRES_PASSWORD=wtf123
       - POSTGRES_DB=OpticalShop
+    networks:
+      - my-network
     ports:
       - "5433:5432"
 
   token-storage:
     image: redis
     restart: always
+    networks:
+      - my-network
     ports:
       - "6379:6379"
+
+  web-morda:
+    image: vitaliy789/web-morda:latest
+    build:
+      context: ../../WebstormProjects/optical_shop_frontend
+      dockerfile: Dockerfile
+    environment:
+      - REACT_APP_BACKEND_URI=http://0.0.0.0:80
+    networks:
+      - my-network
+    ports:
+      - "3000:3000"
+
+
+networks:
+  my-network:
+    driver: bridge

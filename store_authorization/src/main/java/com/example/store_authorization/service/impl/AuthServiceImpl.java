@@ -32,10 +32,9 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public boolean checkRefreshToken(String refreshToken) {
         Algorithm algorithm = Algorithm.HMAC256(jwtRefreshSecret);
-        if (checkToken(algorithm, refreshToken)){
+        if (refreshToken!= null && checkToken(algorithm, refreshToken)){
             User user = tokenService.getUserWithLoginAndRoleByToken(refreshToken);
             Optional<Refresh> refresh = refreshRepository.findById(user.getLogin());
-//            return true;
             return refresh.isPresent() && refreshToken.equals(refresh.get().getRefreshToken());
         }
         return false;

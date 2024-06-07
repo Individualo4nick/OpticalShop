@@ -43,6 +43,14 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
+    @PostMapping("/secretRegister")
+    public ResponseEntity<ResponseDto> registerS(@RequestBody User user) {
+        userService.registerS(user);
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setMessage("Registered");
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+    }
+
     @PostMapping("/token")
     public ResponseEntity<TokenResponse> getToken(@RequestBody JwtRequest jwtRequest) throws LoginException {
         userService.checkCredentials(jwtRequest);
@@ -67,8 +75,7 @@ public class AuthController {
 
     @ExceptionHandler({LoginException.class, TokenException.class})
     public ResponseEntity<ErrorResponse> handleUserRegistrationException(Exception ex) {
-        return ResponseEntity
-                .badRequest()
+        return ResponseEntity.badRequest()
                 .body(new ErrorResponse(ex.getMessage()));
     }
     @ExceptionHandler({DataIntegrityViolationException.class})

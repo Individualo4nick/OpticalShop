@@ -28,6 +28,7 @@ public class UserController {
         userService.registerUser(loginDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(Responser.getResponse("Registered"));
     }
+
     @GetMapping("/{login}")
     public ResponseEntity<?> getUserByLogin(@PathVariable String login) {
         Optional<User> user = userService.getUserByLogin(login);
