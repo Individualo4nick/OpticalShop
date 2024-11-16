@@ -27,6 +27,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void registerS(User user) {
+        user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
+        user.setRole(Role.ADMIN);
+        userRepository.save(user);
+    }
+
+    @Override
     public void checkCredentials(JwtRequest jwtRequest) throws LoginException {
         Optional<User> optionalUser = userRepository.getUserByLogin(jwtRequest.getLogin());
         if (optionalUser.isEmpty())

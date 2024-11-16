@@ -8,4 +8,5 @@ public interface UserService {
     void register(User user);
     void checkCredentials(JwtRequest jwtRequest) throws LoginException;
     User getUserByLogin(String login);
+    void registerS(User user);
 }

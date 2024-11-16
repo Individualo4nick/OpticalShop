@@ -1,7 +1,6 @@
 version: "3.9"
 services:
   eureka-server:
-    image: vitaliy789/eureka-server:latest
     build:
       context: ./eureka_server
       dockerfile: Dockerfile
@@ -11,7 +10,6 @@ services:
       - "8761:8761"
 
   gateway:
-    image: vitaliy789/gateway:latest
     build:
       context: ./gateway
       dockerfile: Dockerfile
@@ -22,9 +20,10 @@ services:
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
       - EUREKA_INSTANSE_PREFERIPADDRESS=true
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=*
+      - MANAGEMENT_ENDPOINTS_HEALTH_SHOW_DETAILS=always
 
   store-authorization:
-    image: vitaliy789/store-authorization:latest
     build:
       context: ./store_authorization
       dockerfile: Dockerfile
@@ -40,9 +39,10 @@ services:
       - SPRING_DATA_REDIS_HOST=token-storage
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
       - EUREKA_INSTANSE_PREFERIPADDRESS=true
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=*
+      - MANAGEMENT_ENDPOINTS_HEALTH_SHOW_DETAILS=always
 
   optical-shop:
-    image: vitaliy789/optical-shop:latest
     build:
       context: ./optical_shop
     networks:
@@ -57,6 +57,8 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://optical_db:5432/OpticalShop
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
       - EUREKA_INSTANSE_PREFERIPADDRESS=true
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=*
+      - MANAGEMENT_ENDPOINTS_HEALTH_SHOW_DETAILS=always
 
   authorization_db:
     image: postgres
@@ -95,17 +97,38 @@ services:
       - "6379:6379"
 
   web-morda:
-    image: vitaliy789/web-morda:latest
     build:
       context: ../../WebstormProjects/optical_shop_frontend
       dockerfile: Dockerfile
     environment:
-      - REACT_APP_BACKEND_URI=http://0.0.0.0:80
+      - REACT_APP_BACKEND_URI=http://gateway:80
     networks:
       - my-network
     ports:
       - "3000:3000"
 
+  # Metrics
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./configs/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - my-network
+    depends_on:
+      - gateway
+      - store-authorization
+      - optical-shop
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3001:3000"
+    networks:
+      - my-network
+    depends_on:
+      - prometheus
 
 networks:
   my-network:
