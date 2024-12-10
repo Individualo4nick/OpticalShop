@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: optical-shop
+  datasource:
+    url: jdbc:postgresql://localhost:5432/OpticalShop
+    username: postgres
+    password: wtf123
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+server:
+  port: 8888
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show:
+        details: always
