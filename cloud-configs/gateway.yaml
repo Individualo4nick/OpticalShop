@@ -175,4 +175,5 @@ spring:
             - TokenValidationFilter
             - AdminFilter
     loadbalancer:
-      retry: true
+      retry:
+        enabled: true
