@@ -40,6 +40,9 @@ spring:
     web-application-type: reactive
   cloud:
     gateway:
+      discovery:
+        locator:
+          enabled: true
       httpserver:
         wiretap: true
       httpclient:
@@ -148,21 +151,21 @@ spring:
           predicates:
             - Path=/order/create
           filters:
-           - TokenValidationFilter
+            - TokenValidationFilter
 
         - id: get_orders
           uri: lb://OPTICAL-SHOP
           predicates:
             - Path=/order
           filters:
-           - TokenValidationFilter
+            - TokenValidationFilter
 
         - id: get_orders_by_login
           uri: lb://OPTICAL-SHOP
           predicates:
             - Path=/order/{*login}
           filters:
-           - TokenValidationFilter
+            - TokenValidationFilter
 
         - id: update_order_state
           uri: lb://OPTICAL-SHOP
@@ -171,3 +174,5 @@ spring:
           filters:
             - TokenValidationFilter
             - AdminFilter
+    loadbalancer:
+      retry: true
