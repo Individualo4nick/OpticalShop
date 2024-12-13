@@ -1,0 +1,29 @@
+spring.application.name: config-server
+server.port: 8070
+spring.cloud.config.server.git:
+  search-paths:
+    - cloud-configs
+  clone-on-start: true
+  default-label: master
+  private-key: |
+    -----BEGIN OPENSSH PRIVATE KEY-----
+    b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+    QyNTUxOQAAACBiB2njNFA7+7niYX1/oGAFsjWcTlTKHjguOTK1qYuTkwAAAKAyO8CzMjvA
+    swAAAAtzc2gtZWQyNTUxOQAAACBiB2njNFA7+7niYX1/oGAFsjWcTlTKHjguOTK1qYuTkw
+    AAAECd+AEBbU3lDCbwW3zycT5PD965ZMDna419ljZE4kkzPmIHaeM0UDv7ueJhfX+gYAWy
+    NZxOVMoeOC45MrWpi5OTAAAAG21vZGVjb20ucGlyb2dlbmtvQGdtYWlsLmNvbQEC
+    -----END OPENSSH PRIVATE KEY-----
+  uri: git@github.com:Individualo4nick/OpticalShop.git
+  ignore-local-ssh-settings: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI:http://localhost:8761/eureka}
+  instance:
+    preferIpAddress: true
+
+spring:
+  cloud:
+    config:
+      enabled: false

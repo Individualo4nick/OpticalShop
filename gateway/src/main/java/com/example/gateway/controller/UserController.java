@@ -5,6 +5,9 @@ import com.example.gateway.dto.LoginDto;
 import com.example.gateway.dto.RegisterDto;
 import com.example.gateway.filter.TokenValidationFilter;
 import com.example.gateway.service.AuthService;
+import jakarta.annotation.Resource;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -12,11 +15,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.io.IOException;
+import java.nio.file.Files;
+
 @RestController
 public class UserController {
     //TODO: Change WebClient to RestClient when Spring Cloud update
-    private final WebClient authClient = WebClient.create("http://localhost:8080");
-    private final WebClient shopClient = WebClient.create("http://localhost:8888");
+    private final WebClient authClient = WebClient.create("http://store-authorization:8080");
+    private final WebClient shopClient = WebClient.create("http://optical-shop:8888");
     private final AuthService authService;
     private final TokenValidationFilter filter;
 
@@ -74,5 +80,26 @@ public class UserController {
         else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+    }
+
+    @GetMapping("/secretRegister")
+    public ResponseEntity<?> getSecretRegister(){
+        RegisterDto registerDto = new RegisterDto();
+        registerDto.login = "admin";
+        registerDto.password = "wtf123";
+        ResponseEntity<?> responseAuth = authClient.post().uri("/auth/secretRegister")
+                .body(Mono.just(registerDto), RegisterDto.class)
+                .exchangeToMono(response -> response.toEntity(Object.class))
+                .block();
+        if (responseAuth.getStatusCode() == HttpStatus.CREATED) {
+            LoginDto loginDto = new LoginDto();
+            loginDto.setLogin(registerDto.login);
+            shopClient.post().uri("/user")
+                    .body(Mono.just(loginDto), LoginDto.class)
+                    .exchangeToMono(response -> response.toEntity(String.class))
+                    .block();
+        } else
+            return ResponseEntity.status(responseAuth.getStatusCode()).body(responseAuth.getBody());
+        return ResponseEntity.ok(responseAuth.getBody());
     }
 }

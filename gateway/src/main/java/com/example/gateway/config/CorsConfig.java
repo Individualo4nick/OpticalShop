@@ -20,7 +20,7 @@ public class CorsConfig {
 
     private static final String ALLOWED_HEADERS = "Origin, X-Requested-With, Authorization, Accept, Content-Type, Credential, X-XSRF-TOKEN, Referer, User-Agent, access-control-allow-origin";
     private static final String ALLOWED_METHODS = "GET, PUT, POST, DELETE, OPTIONS";
-    private static final String ALLOWED_ORIGIN = "http://localhost:3000";
+    private static final String ALLOWED_ORIGIN = "http://192.144.14.39:3000";
     private static final String MAX_AGE = "3600";
 
     @Bean
