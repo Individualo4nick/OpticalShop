@@ -2,22 +2,41 @@ version: "3.9"
 services:
   eureka-server:
     build:
-      context: ./eureka_server
-      dockerfile: Dockerfile
+      context: eureka_server
+      dockerfile: eureka_server/Dockerfile
     networks:
       - my-network
     ports:
       - "8761:8761"
 
+  config-server:
+    build:
+      context: config_server
+      dockerfile: config_server/Dockerfile
+    container_name: config-server
+    networks:
+      - my-network
+    ports:
+      - "8070:8070"
+    environment:
+      - SPRING_APPLICATION_NAME=config-server
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - EUREKA_INSTANSE_PREFERIPADDRESS=true
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=*
+      - MANAGEMENT_ENDPOINTS_HEALTH_SHOW_DETAILS=always
+
   gateway:
     build:
-      context: ./gateway
-      dockerfile: Dockerfile
+      context: gateway
+      dockerfile: gateway/Dockerfile
+    depends_on:
+      - config-server
     networks:
       - my-network
     ports:
       - "80:80"
     environment:
+      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8070
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
       - EUREKA_INSTANSE_PREFERIPADDRESS=true
       - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=*
@@ -25,17 +44,18 @@ services:
 
   store-authorization:
     build:
-      context: ./store_authorization
-      dockerfile: Dockerfile
+      context: store_authorization
+      dockerfile: store_authorization/Dockerfile
     networks:
       - my-network
     ports:
       - "8080:8080"
     depends_on:
-      - authorization_db
+      - authorization-db
       - token-storage
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://authorization_db:5432/store_authorization
+      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8070
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://authorization-db:5432/store_authorization
       - SPRING_DATA_REDIS_HOST=token-storage
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
       - EUREKA_INSTANSE_PREFERIPADDRESS=true
@@ -44,27 +64,26 @@ services:
 
   optical-shop:
     build:
-      context: ./optical_shop
+      context: optical_shop
     networks:
       - my-network
     ports:
       - "8888:8888"
-    volumes:
-      - ./images:/app/images
     depends_on:
-      - optical_db
+      - optical-db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://optical_db:5432/OpticalShop
+      - SPRING_CONFIG_IMPORT=configserver:http://config-server:8070
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://optical-db:5432/OpticalShop
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
       - EUREKA_INSTANSE_PREFERIPADDRESS=true
       - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=*
       - MANAGEMENT_ENDPOINTS_HEALTH_SHOW_DETAILS=always
 
-  authorization_db:
+  authorization-db:
     image: postgres
     restart: always
     volumes:
-      - ./sql/schema-postgresql.sql:/docker-entrypoint-initdb.d/create_tables.sql
+      - authorization-db-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=wtf123
@@ -74,11 +93,11 @@ services:
     ports:
       - "5434:5432"
 
-  optical_db:
+  optical-db:
     image: postgres
     restart: always
     volumes:
-      - ./sql/schema-postgresql.sql:/docker-entrypoint-initdb.d/create_tables.sql
+      - optical-db-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=wtf123
@@ -96,40 +115,9 @@ services:
     ports:
       - "6379:6379"
 
-  web-morda:
-    build:
-      context: ../../WebstormProjects/optical_shop_frontend
-      dockerfile: Dockerfile
-    environment:
-      - REACT_APP_BACKEND_URI=http://gateway:80
-    networks:
-      - my-network
-    ports:
-      - "3000:3000"
-
-  # Metrics
-  prometheus:
-    image: prom/prometheus:latest
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./configs/prometheus.yml:/etc/prometheus/prometheus.yml
-    networks:
-      - my-network
-    depends_on:
-      - gateway
-      - store-authorization
-      - optical-shop
-
-  grafana:
-    image: grafana/grafana:latest
-    ports:
-      - "3001:3000"
-    networks:
-      - my-network
-    depends_on:
-      - prometheus
-
+volumes:
+  authorization-db-data:
+  optical-db-data:
 networks:
   my-network:
     driver: bridge

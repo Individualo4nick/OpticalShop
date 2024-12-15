@@ -1,6 +1,6 @@
 spring:
   application:
-    name: optical-shop
+    name: store-authorization
   config.import: configserver:http://config-server:8070
   cloud.config:
     fail-fast: true
