@@ -2,7 +2,7 @@ spring:
   application:
     name: gateway
   config:
-    import: configserver:http://config-server:8070
+    import: configserver:http://localhost8070
   cloud:
     config:
       fail-fast: true

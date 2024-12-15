@@ -1,7 +1,7 @@
 spring:
   application:
     name: store-authorization
-  config.import: configserver:http://config-server:8070
+  config.import: configserver:http://localhost:8070
   cloud.config:
     fail-fast: true
     label: master
