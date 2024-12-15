@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.35.0 (HEAD)
+  labels:
+    io.kompose.service: token-storage
+  name: token-storage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: token-storage
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.35.0 (HEAD)
+      labels:
+        io.kompose.service: token-storage
+    spec:
+      containers:
+        - image: redis
+          name: token-storage
+          ports:
+            - containerPort: 6379
+              protocol: TCP
+      restartPolicy: Always

@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.35.0 (HEAD)
+  labels:
+    io.kompose.service: gateway
+  name: gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: gateway
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.35.0 (HEAD)
+      labels:
+        io.kompose.service: gateway
+    spec:
+      containers:
+        - env:
+            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+              value: http://eureka-server:8761/eureka
+            - name: EUREKA_INSTANSE_PREFERIPADDRESS
+              value: "true"
+            - name: MANAGEMENT_ENDPOINTS_HEALTH_SHOW_DETAILS
+              value: always
+            - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
+              value: '*'
+            - name: SPRING_CONFIG_IMPORT
+              value: configserver:http://config-server:8070
+          image: localhost:5000/gateway:minikube
+          name: gateway
+          ports:
+            - containerPort: 80
+              protocol: TCP
+      restartPolicy: Always

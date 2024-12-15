@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.35.0 (HEAD)
+  labels:
+    io.kompose.service: optical-shop
+  name: optical-shop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: optical-shop
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.35.0 (HEAD)
+      labels:
+        io.kompose.service: optical-shop
+    spec:
+      containers:
+        - env:
+            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+              value: http://eureka-server:8761/eureka
+            - name: EUREKA_INSTANSE_PREFERIPADDRESS
+              value: "true"
+            - name: MANAGEMENT_ENDPOINTS_HEALTH_SHOW_DETAILS
+              value: always
+            - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
+              value: '*'
+            - name: SPRING_CONFIG_IMPORT
+              value: configserver:http://config-server:8070
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://optical-db:5432/OpticalShop
+          image: localhost:5000/optical-shop:minikube
+          name: optical-shop
+          ports:
+            - containerPort: 8888
+              protocol: TCP
+      restartPolicy: Always

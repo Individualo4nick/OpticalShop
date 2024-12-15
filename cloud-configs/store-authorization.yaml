@@ -9,7 +9,7 @@ spring:
       host: localhost
       port: 6379
   datasource:
-    url: jdbc:postgresql://authorization-db:5432/store_authorization
+    url: jdbc:postgresql://authorization-db:5432/store-authorization
     username: postgres
     password: wtf123
   jpa:
