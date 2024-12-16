@@ -21,8 +21,8 @@ import java.nio.file.Files;
 @RestController
 public class UserController {
     //TODO: Change WebClient to RestClient when Spring Cloud update
-    private final WebClient authClient = WebClient.create("http://store-authorization:8080");
-    private final WebClient shopClient = WebClient.create("http://optical-shop:8888");
+    private final WebClient authClient = WebClient.create("http://localhost:8080");
+    private final WebClient shopClient = WebClient.create("http://localhost:8888");
     private final AuthService authService;
     private final TokenValidationFilter filter;
 

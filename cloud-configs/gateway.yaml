@@ -66,13 +66,6 @@ spring:
           filters:
             - RewritePath=/auth/login, /auth/token
 
-        - id: registration
-          uri: lb://STORE-AUTHORIZATION
-          predicates:
-            - Path=/auth/registration
-          filters:
-            - RewritePath=/auth/registration, /auth
-
         - id: refresh
           uri: lb://STORE-AUTHORIZATION
           predicates:
