@@ -19,6 +19,7 @@
 
 	•	Spring Boot
 	•	Spring Cloud
+ 	•	Testcontainers
 	•	Docker
 	•	PostgreSQL
 	•	Hibernate
